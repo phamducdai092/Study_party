@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Role implements EnumMeta {
-    USER("USER", "User", "Người dùng thường", "zinc", "User", 10, true),
-    ADMIN("ADMIN", "Admin", "Quản trị hệ thống", "red", "ShieldAlert", 20, true);
+public enum MemberRole implements EnumMeta {
+    OWNER("OWNER", "Owner", "Chủ phòng/nhóm", "violet", "Crown", 10, true),
+    MOD("MOD", "Moderator", "Quản trị viên", "blue", "Shield", 20, true),
+    MEMBER("MEMBER", "Member", "Thành viên", "zinc", "User", 30, true);
 
     private final String code;
     private final String label;

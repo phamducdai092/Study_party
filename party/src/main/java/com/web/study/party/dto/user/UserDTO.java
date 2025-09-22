@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.Instant;
+
 
 @Data
 @NoArgsConstructor
@@ -18,7 +20,11 @@ public class UserDTO {
     private String email;
 
     private String avatarUrl;
+    private String bannerUrl;
     private String displayName;
+    private String bio;
+    private String phoneNumber;
+    private Instant dateOfBirth;
 
     private boolean online;
     private boolean verified;

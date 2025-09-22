@@ -5,9 +5,10 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Role implements EnumMeta {
-    USER("USER", "User", "Người dùng thường", "zinc", "User", 10, true),
-    ADMIN("ADMIN", "Admin", "Quản trị hệ thống", "red", "ShieldAlert", 20, true);
+public enum JoinPolicy implements EnumMeta {
+    OPEN("OPEN", "Open", "Ai cũng có thể tham gia", "green", "DoorOpen", 10, true),
+    ASK("ASK", "Ask to Join", "Cần gửi yêu cầu duyệt", "amber", "MailQuestion", 20, true),
+    INVITE_ONLY("INVITE_ONLY", "Invite Only", "Chỉ qua lời mời", "violet", "UserPlus2", 30, true);
 
     private final String code;
     private final String label;

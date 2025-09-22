@@ -22,7 +22,7 @@ public class AccountController {
     public ResponseEntity<ApiResponse<Void>> verifyEmail(@Valid @RequestBody VerifyEmailRequest req, HttpServletRequest httpRequest) {
         accountService.requestVerifyEmail(req);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .data(null)
                 .path(httpRequest.getRequestURI())
@@ -35,7 +35,7 @@ public class AccountController {
     public ResponseEntity<ApiResponse<Void>> confirmVerifyEmail(@Valid @RequestBody ConfirmVerifyEmailRequest req, HttpServletRequest httpRequest) {
         accountService.confirmVerifyEmail(req);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .data(null)
                 .path(httpRequest.getRequestURI())
@@ -48,7 +48,7 @@ public class AccountController {
     public ResponseEntity<ApiResponse<Void>> forgotPassword(@Valid @RequestBody ForgotPasswordRequest req, HttpServletRequest httpRequest) {
         accountService.forgotPassword(req);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .data(null)
                 .path(httpRequest.getRequestURI())
@@ -61,7 +61,7 @@ public class AccountController {
     public ResponseEntity<ApiResponse<Void>> resetPassword(@Valid @RequestBody ResetPasswordRequest req, HttpServletRequest httpRequest) {
         accountService.resetPassword(req);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .data(null)
                 .path(httpRequest.getRequestURI())
@@ -75,7 +75,7 @@ public class AccountController {
         String email = auth.getName();
         accountService.changePassword(email, req);
         ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .data(null)
                 .path(httpRequest.getRequestURI())

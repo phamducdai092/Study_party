@@ -5,9 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum Role implements EnumMeta {
-    USER("USER", "User", "Người dùng thường", "zinc", "User", 10, true),
-    ADMIN("ADMIN", "Admin", "Quản trị hệ thống", "red", "ShieldAlert", 20, true);
+public enum AccountStatus implements EnumMeta {
+
+    ACTIVE("ACTIVE", "Active", "Tài khoản đang hoạt động", "green", "ShieldCheck", 10, true),
+    BANNED("BANNED", "Banned", "Bị khoá do vi phạm", "red", "OctagonAlert", 20, true),
+    DEACTIVATED("DEACTIVATED", "Deactivated", "Người dùng tự vô hiệu", "zinc", "UserX", 30, true);
 
     private final String code;
     private final String label;

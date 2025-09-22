@@ -7,13 +7,14 @@ import java.time.Instant;
 @Entity
 public class RefreshToken {
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private Users user;
 
-    @Column(unique=true, nullable=false)
+    @Column(unique = true, nullable = false)
     private String token;
 
     private Instant expiresAt;

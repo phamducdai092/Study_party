@@ -16,6 +16,6 @@ public class JwtProperties {
     private String refreshCookieName = "refresh_token";
     private String refreshCookiePath = "/auth"; // chỉ gửi cho auth endpoints
     private String refreshCookieDomain;                // để trống nếu same-origin
-    private String refreshCookieSameSite = "Strict";   // Strict|Lax|None
-    private boolean refreshCookieSecure = true;        // true trên HTTPS
+    private String refreshCookieSameSite = "Lax";   // Strict|Lax|None
+    private boolean refreshCookieSecure = false;        // true trên HTTPS
 }

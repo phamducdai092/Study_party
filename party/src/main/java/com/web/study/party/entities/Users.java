@@ -1,7 +1,8 @@
 package com.web.study.party.entities;
 
+import com.web.study.party.entities.enums.AccountStatus;
 import com.web.study.party.entities.enums.Role;
-import com.web.study.party.entities.group.UserStudyGroup;
+import com.web.study.party.entities.group.GroupMembers;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,7 +17,6 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class Users {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,21 +28,26 @@ public class Users {
     private String password;
 
     private String avatarUrl;
+    private String bannerUrl;
     private String displayName;
+    private String bio;
+    private String phoneNumber;
+    private Instant dateOfBirth;
 
-    @Column(name = "is_online",nullable = false)
+    @Column(name = "is_online", nullable = false)
     private boolean online;
-    @Column(name= "is_verified", nullable = false)
+    @Column(name = "is_verified", nullable = false)
     private boolean verified;
     @Column(name = "is_locked", nullable = false)
     private boolean locked;
 
     private Instant emailVerifiedAt;
-
+    private Instant updatedAt;
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    private List<UserStudyGroup> studyGroups;
+    @Enumerated(EnumType.STRING)
+    private AccountStatus accountStatus;
+
 }
 

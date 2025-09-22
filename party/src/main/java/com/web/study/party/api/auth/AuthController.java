@@ -29,7 +29,7 @@ public class AuthController {
         authResponse = authService.register(req);
 
         ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .data(authResponse)
                 .path(httpRequest.getRequestURI())
@@ -40,7 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest req,  HttpServletRequest httpRequest) {
+    public ResponseEntity<ApiResponse<AuthResponse>> login(@Valid @RequestBody LoginRequest req, HttpServletRequest httpRequest) {
         String ip = httpRequest.getRemoteAddr();
         String ua = httpRequest.getHeader("User-Agent");
 
@@ -50,7 +50,7 @@ public class AuthController {
         authResponse = pair;
 
         ApiResponse<AuthResponse> response = ApiResponse.<AuthResponse>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .path(httpRequest.getRequestURI())
                 .data(authResponse)
@@ -64,7 +64,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public ResponseEntity<ApiResponse<TokenResponse>> refreshToken(@CookieValue(name = "${security.jwt.refresh-cookie-name:refresh_token}", required = false) String refreshCookie,
-                                                                                                                                                                HttpServletRequest httpRequest) {
+                                                                   HttpServletRequest httpRequest) {
 
         if (refreshCookie == null || refreshCookie.isBlank()) {
             // 401 để FE biết cần login lại
@@ -80,7 +80,7 @@ public class AuthController {
         TokenResponse tokenResponse = new TokenResponse(pair.accessToken());
 
         ApiResponse<TokenResponse> response = ApiResponse.<TokenResponse>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .path(httpRequest.getRequestURI())
                 .data(tokenResponse)
@@ -101,7 +101,7 @@ public class AuthController {
         var clear = CookieUtils.clearRefreshCookie(jwtProps);
 
         ApiResponse<Void> response = ApiResponse.<Void>builder()
-                .status(CodeStatus.SUCCESS.getCode())
+                .status(CodeStatus.SUCCESS.getHttpCode())
                 .code("SUCCESS")
                 .path(httpRequest.getRequestURI())
                 .message("Đăng xuất thành công")
