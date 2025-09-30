@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AuthState, LoginPayload } from '@/types/auth.type';
+import type { AuthState, LoginPayload } from '@/types/auth.type.ts';
 import {
 	loadMe as apiLoadMe,
 	login as apiLogin,
-} from '@/services/auth_api/auth';
-import { clearTokens, setTokens } from '@/lib/token';
+} from '@/services/auth.service.ts';
+import { clearTokens, setTokens } from '@/lib/token.ts';
 
 const useAuthStore = create<AuthState>()(
 	persist(
@@ -57,6 +57,7 @@ const useAuthStore = create<AuthState>()(
 					throw e;
 				}
 			},
+			setUser: (user) => set({ user }),
 
 			loadMeOnce: () => {
 				const { meStatus } = get();

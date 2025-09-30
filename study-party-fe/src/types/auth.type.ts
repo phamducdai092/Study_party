@@ -8,6 +8,7 @@ export type AuthState = {
 	login: (payload: LoginPayload) => Promise<void>;
 	logout: () => void;
 	loadMe: () => Promise<void>;
+	setUser: (user: User | null) => void;
 	_hydrated: boolean; // để biết store đã được rehydrate từ localStorage chưa
 	setHydrated: (v: boolean) => void;
 	meStatus: 'idle' | 'loading' | 'success' | 'error';

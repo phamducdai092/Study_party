@@ -1,6 +1,6 @@
-import http from "@/lib/http";
-import type { AuthResponse, LoginPayload, RegisterPayload, TokenPair } from "@/types/auth.type";
-import { clearTokens } from "@/lib/token";
+import http from "@/lib/http.ts";
+import type { AuthResponse, LoginPayload, RegisterPayload, TokenPair } from "@/types/auth.type.ts";
+import { clearTokens } from "@/lib/token.ts";
 
 export const login = (payload: LoginPayload) => {
 	return http.post<AuthResponse>("auth/login", payload);

@@ -1,6 +1,6 @@
 import {Navigate, Outlet, useLocation} from "react-router-dom";
 import {useEffect, useRef} from "react";
-import useAuthStore from "@/store/auth/authStore";
+import useAuthStore from "@/store/auth.store.ts";
 import {getAccess} from "@/lib/token";
 import {toast} from "sonner";
 
