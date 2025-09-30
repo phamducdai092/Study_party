@@ -12,7 +12,7 @@ import {
 } from '@/components/ui/card';
 import {BookOpen, Users, Video, GraduationCap} from 'lucide-react';
 import {toast} from 'sonner';
-import useAuthStore from '@/store/auth/authStore';
+import useAuthStore from '@/store/auth.store.ts';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {AxiosError} from "axios";
 

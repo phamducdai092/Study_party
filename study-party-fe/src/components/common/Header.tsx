@@ -1,10 +1,9 @@
 import {Link, useNavigate} from "react-router-dom";
-import {SidebarTrigger} from "@/components/ui/sidebar";
-import {ModeToggle} from "@/components/features/mode-toggle";
+import {SidebarTrigger} from "@/components/ui/sidebar.tsx";
+import {ModeToggle} from "@/components/features/mode-toggle.tsx";
 import {Bell, Plus, Search, Home, User, School, BookOpen, Files, Settings, LogOut, Shield} from "lucide-react";
-import {Input} from "@/components/ui/input";
-import {Button} from "@/components/ui/button";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Input} from "@/components/ui/input.tsx";
+import {Button} from "@/components/ui/button.tsx";
 import {
     DropdownMenu,
     DropdownMenuTrigger,
@@ -12,13 +11,14 @@ import {
     DropdownMenuItem,
     DropdownMenuLabel,
     DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
-import useAuthStore from "@/store/auth/authStore";
+} from "@/components/ui/dropdown-menu.tsx";
+import useAuthStore from "@/store/auth.store.ts";
+import AvatarDisplay from "@/components/shared/AvatarDisplay.tsx";
 
 const NAV_ITEMS = [
     {to: "/", label: "Home", icon: Home},
     {to: "/me", label: "Profile", icon: User},
-    {to: "/rooms", label: "Phòng học", icon: School, disabled: true},
+    {to: "/rooms", label: "Phòng học", icon: School},
     {to: "/flashcard", label: "Flashcard", icon: BookOpen, disabled: true},
     {to: "/docs", label: "Tài liệu", icon: Files, disabled: true},
     {to: "/settings", label: "Settings", icon: Settings, disabled: true},
@@ -65,10 +65,8 @@ export default function Header() {
                         <DropdownMenu modal={false}>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="rounded-full p-0" type="button">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage src={user.avatar_url ?? "https://i.pravatar.cc/120?img=5"}/>
-                                        <AvatarFallback>{user?.display_name?.[0]?.toUpperCase() ?? "U"}</AvatarFallback>
-                                    </Avatar>
+                                    <AvatarDisplay src={user!.avatarUrl} fallback={user!.displayName}
+                                                   alt={user!.displayName} size={46} fit="cover"/>
                                 </Button>
                             </DropdownMenuTrigger>
 
@@ -77,11 +75,11 @@ export default function Header() {
                                 sideOffset={8}
                                 onCloseAutoFocus={(e) => e.preventDefault()}
                                 collisionPadding={8}
-                                className="w-48 px-2"
+                                className="w-48 px-2 z-30"
                             >
                                 <DropdownMenuLabel>
                                     <div className="flex flex-col">
-                                        <span className="font-medium truncate">{user.display_name ?? "User"}</span>
+                                        <span className="font-medium truncate">{user.displayName ?? "User"}</span>
                                         <span
                                             className="text-xs text-muted-foreground truncate">{user.email ?? ""}</span>
                                     </div>

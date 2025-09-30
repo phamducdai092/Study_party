@@ -1,17 +1,29 @@
 import {
-    Users, Timer, NotebookPen, MessageSquareText, Star, Crown, BookOpen,
-    Calendar, Trophy, Zap, Target, Award, TrendingUp, Brain,
+    Users, Timer, NotebookPen, MessageSquareText, Star, Crown,
+    Calendar, Trophy, Zap, Target, Award, TrendingUp, Brain, Info, ChevronRight,
 } from "lucide-react";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
 import {Progress} from "@/components/ui/progress";
-import useAuthStore from "@/store/auth/authStore";
+import useAuthStore from "@/store/auth.store.ts";
 import {cn} from "@/lib/utils.ts";
+import RoomCard from "@/components/features/group/RoomCard.tsx";
+import {UserInfoDialog} from "@/components/features/user/UserProfileDialog.tsx";
+import AvatarDisplay from "@/components/shared/AvatarDisplay.tsx";
+import {useNavigate} from "react-router-dom";
+import type {Room} from "@/types/group.type.ts";
+import {useGroupStore} from "@/store/group.store.ts";
+import type {EnumItem} from "@/types/enum.type.ts";
+import {useEnumStore} from "@/store/enum.store.ts";
+import {getEnumItem} from "@/utils/enumItemExtract.ts";
 
 export default function UserProfilePage() {
+    const nav = useNavigate();
+
     const {user} = useAuthStore();
+    const myRooms: Room[] = useGroupStore(state => state.userRoomsJoined);
+    const groupEnum: EnumItem[] = useEnumStore().get("GroupTopic");
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-background to-muted/20">
@@ -21,18 +33,16 @@ export default function UserProfilePage() {
                     <div
                         className="h-40 w-full bg-gradient-to-r from-[oklch(var(--hero-from))] to-[oklch(var(--hero-to))] relative">
                         <div
-                            className="bg-[url(https://images.unsplash.com/photo-1603486002664-a7319421e133?q=80&w=1242&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)] bg-center absolute inset-0 bg-black/20"/>
+                            className="absolute inset-0 bg-center bg-black/20"
+                            style={{backgroundImage: `url(${user?.bannerUrl})`}}
+                        />
                     </div>
                     <div className="flex items-end gap-6 px-8 -mt-2 pb-6 relative z-10">
-                        <Avatar className="h-24 w-24 border-4 border-background shadow-lg">
-                            <AvatarImage src="https://i.pravatar.cc/160?img=8"/>
-                            <AvatarFallback className="text-2xl font-semibold bg-primary text-primary-foreground">
-                                TP
-                            </AvatarFallback>
-                        </Avatar>
+                        <AvatarDisplay src={user!.avatarUrl} fallback={user!.displayName}
+                                       alt={user?.avatarUrl || "User Avatar"} size={124}/>
                         <div className="pb-2 flex-1">
                             <div className="flex items-center gap-4 mb-3">
-                                <h1 className="text-3xl font-bold">{user?.display_name || user?.email || "Chào bạn"}</h1>
+                                <h1 className="text-3xl font-bold">{user?.displayName || user?.email || "Chào bạn"}</h1>
                                 <Badge className="bg-success/10 text-success border-success/20">
                                     <Zap className="w-3 h-3 mr-1"/>
                                     Active Learner
@@ -53,14 +63,14 @@ export default function UserProfilePage() {
                                 </Badge>
                             </div>
                         </div>
-                        <div className="flex gap-3">
-                            <Button variant="outline" size="sm">
-                                Chỉnh sửa profile
-                            </Button>
+                        <UserInfoDialog
+                            user={user!}
+                        >
                             <Button size="sm" className="bg-gradient-to-r from-primary to-primary/80">
-                                Chia sẻ profile
+                                <Info className="w-4 h-4"/> Thông tin
                             </Button>
-                        </div>
+                        </UserInfoDialog>
+
                     </div>
                 </Card>
 
@@ -133,8 +143,7 @@ export default function UserProfilePage() {
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    {/* Enhanced Groups Section */}
+                <div>
                     <Card className="lg:col-span-2">
                         <CardHeader className="pb-4">
                             <div className="flex items-center justify-between">
@@ -142,77 +151,19 @@ export default function UserProfilePage() {
                                     <Users className="h-5 w-5 text-primary"/>
                                     Nhóm đang tham gia
                                 </CardTitle>
-                                <Badge variant="secondary" className="rounded-full">
-                                    3 nhóm hoạt động
-                                </Badge>
+                                <Button variant="ghost" size="sm">Xem tất cả <ChevronRight/></Button>
                             </div>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            {[
-                                {
-                                    name: "CNPM x Team",
-                                    topic: "Software Engineering",
-                                    members: 24,
-                                    activity: "92% tuần này",
-                                    color: "from-blue-400 to-blue-600",
-                                    bgColor: "bg-blue-50 dark:bg-blue-950/20",
-                                    textColor: "text-blue-700 dark:text-blue-300"
-                                },
-                                {
-                                    name: "IELTS 6.5+",
-                                    topic: "English Learning",
-                                    members: 38,
-                                    activity: "88% tuần này",
-                                    color: "from-violet-400 to-violet-600",
-                                    bgColor: "bg-violet-50 dark:bg-violet-950/20",
-                                    textColor: "text-violet-700 dark:text-violet-300"
-                                },
-                                {
-                                    name: "Discrete Math",
-                                    topic: "Mathematics",
-                                    members: 22,
-                                    activity: "76% tuần này",
-                                    color: "from-emerald-400 to-emerald-600",
-                                    bgColor: "bg-emerald-50 dark:bg-emerald-950/20",
-                                    textColor: "text-emerald-700 dark:text-emerald-300"
-                                },
-                            ].map((group, i) => (
-                                <Card key={i}
-                                      className="overflow-hidden hover:shadow-md transition-all duration-300 border-0 shadow-sm">
-                                    <div className={`h-1 bg-gradient-to-r ${group.color}`}/>
-                                    <CardContent className="p-4">
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="flex-1">
-                                                <h3 className="font-semibold text-lg mb-1">{group.name}</h3>
-                                                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                                                    <span className="flex items-center gap-1">
-                                                        <BookOpen className="h-3 w-3"/>
-                                                        {group.topic}
-                                                    </span>
-                                                    <span className="flex items-center gap-1">
-                                                        <Users className="h-3 w-3"/>
-                                                        {group.members} thành viên
-                                                    </span>
-                                                </div>
-                                            </div>
-                                            <div className="text-right">
-                                                <Badge className={cn("mb-2", group.bgColor, group.textColor)}>
-                                                    {group.activity}
-                                                </Badge>
-                                                <div className="flex gap-2">
-                                                    <Button size="sm" variant="outline">
-                                                        Vào phòng
-                                                    </Button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
+                        <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">
+                            {myRooms.map(r => (
+                                <RoomCard key={r.id} room={r} enumItem={getEnumItem(groupEnum, r.topic)}
+                                          onClick={() => nav(`/rooms/${r.slug}`)}/>
                             ))}
                         </CardContent>
                     </Card>
+                </div>
 
-                    {/* Enhanced Achievements */}
+                <div>
                     <Card>
                         <CardHeader className="pb-4">
                             <CardTitle className="flex items-center gap-2">
@@ -220,8 +171,8 @@ export default function UserProfilePage() {
                                 Achievements
                             </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="grid grid-cols-2 gap-3">
+                        <CardContent className="flex flex-col gap-4">
+                            <div className="flex flex-wrap gap-4">
                                 {[
                                     {name: "Focus Master", icon: Timer, earned: true, color: "text-primary"},
                                     {name: "Team Helper", icon: Users, earned: true, color: "text-success"},
@@ -234,26 +185,47 @@ export default function UserProfilePage() {
                                     },
                                     {name: "Top Performer", icon: Star, earned: true, color: "text-warning"},
                                     {name: "Group Leader", icon: Crown, earned: true, color: "text-primary"},
+                                    {name: "Top Performer", icon: Star, earned: true, color: "text-warning"},
+                                    {name: "Group Leader", icon: Crown, earned: true, color: "text-primary"},
                                 ].map((badge, i) => (
-                                    <div key={i} className={cn(
-                                        "flex flex-col items-center gap-2 rounded-xl border-2 p-4 text-center transition-all duration-300",
-                                        badge.earned
-                                            ? "bg-gradient-to-br from-background to-muted/30 border-primary/20 hover:border-primary/40 shadow-sm"
-                                            : "bg-muted/30 border-muted-foreground/20 opacity-60"
-                                    )}>
-                                        <badge.icon className={cn("h-6 w-6", badge.color)}/>
-                                        <div className="text-xs font-medium">{badge.name}</div>
-                                        {badge.earned && (
-                                            <Badge variant="secondary" className="text-xs px-2 py-0">
-                                                Đạt được
-                                            </Badge>
+                                    <div
+                                        key={i}
+                                        className={cn(
+                                            "group relative aspect-square w-24 sm:w-24 md:w-28 lg:w-32 overflow-hidden rounded-xl border-2 p-3 text-center transition-all duration-300", // 👈 vuông 1:1 + size cố định
+                                            badge.earned
+                                                ? "bg-gradient-to-br from-background to-muted/30 border-primary/20 hover:border-primary/40 shadow-sm"
+                                                : "bg-muted/30 border-muted-foreground/20 opacity-60"
                                         )}
+                                    >
+                                        <div
+                                            className="grid h-full w-full grid-rows-[auto,1fr,auto] items-center justify-items-center">
+                                            <badge.icon className={cn("h-6 w-6", badge.color)}/>
+                                            <div
+                                                className="w-full px-1 text-xs font-medium leading-tight line-clamp-2"
+                                                title={badge.name}
+                                            >
+                                                {badge.name}
+                                            </div>
+                                            {badge.earned ? (
+                                                <Badge
+                                                    variant="secondary"
+                                                    className="text-[10px] px-2 py-0 bg-success text-primary-foreground"
+                                                >
+                                                    Đạt được
+                                                </Badge>
+                                            ) : (
+                                                <span
+                                                    className="h-4"/>
+                                            )}
+                                        </div>
+                                        <div
+                                            className="pointer-events-none absolute inset-0 rounded-xl ring-0 ring-primary/0 transition-all duration-300 group-hover:ring-2 group-hover:ring-primary/30"/>
                                     </div>
+
                                 ))}
                             </div>
-
                             {/* Progress to next achievement */}
-                            <div className="mt-6 p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl">
+                            <div className="p-4 bg-gradient-to-br from-muted/50 to-muted/30 rounded-xl">
                                 <div className="flex items-center gap-2 mb-2">
                                     <Target className="h-4 w-4 text-primary"/>
                                     <span className="text-sm font-medium">Tiến độ thành tích tiếp theo</span>

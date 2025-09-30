@@ -1,25 +1,33 @@
 import {Badge} from "@/components/ui/badge";
-import {makeTopicVars} from "@/utils/color";
-import {useTopicColorStore} from "@/store/group/topicColorStore";
-import type {TopicProps} from "@/types/group.type.ts";
-import React from "react";
+import {getIcon, topicColorMap} from "@/utils/color.ts";
+import {cn} from "@/lib/utils";
+import type {EnumItem} from "@/types/enum.type.ts";
 
-export default function TopicBadge({topic, color, className, size = "md"}: TopicProps) {
-    const getColor = useTopicColorStore((s) => s.getColor);
-    const final = color || getColor(topic);
-    const style = makeTopicVars(final);
+type Props = {
+    enumItem?: EnumItem;
+    fallback?: string; // nếu không có enumItem thì hiển thị slug/topic code
+};
+
+
+export function TopicBadge({enumItem, fallback}: Props) {
+    if (!enumItem) {
+        return (
+            <Badge variant="secondary" className="text-xs px-2 py-0.5">
+                {fallback}
+            </Badge>
+        );
+    }
+
+    const Icon = getIcon(enumItem?.icon);
+    const colorClass = topicColorMap[enumItem.color] ?? "bg-gray-100 text-gray-700";
 
     return (
         <Badge
-            // Tailwind v4: dùng CSS vars
-            className={[
-                "bg-[--topic-bg] text-[--topic-fg] border border-[--topic-border] hover:bg-[--topic-bg-hover] transition-colors",
-                size === "sm" ? "text-xs py-0.5 px-2 rounded-md" : "text-sm py-1 px-2.5 rounded-lg",
-                className || ""
-            ].join(" ")}
-            style={style as React.CSSProperties}
+            variant="secondary"
+            className={cn("flex items-center gap-1 text-xs px-2 py-0.5", colorClass)}
         >
-            {topic}
+            {Icon && <Icon className="w-3 h-3"/>}
+            {enumItem.label}
         </Badge>
     );
 }

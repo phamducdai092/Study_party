@@ -3,9 +3,8 @@ import {
     SidebarInset,
     SidebarProvider,
 } from "@/components/ui/sidebar";
-import AppSidebar from "@/components/shared/AppSidebar";
-import Header from "@/components/shared/Header.tsx";
-
+import AppSidebar from "@/components/common/sidebar/AppSidebar.tsx";
+import Header from "@/components/common/Header.tsx";
 
 export default function MainLayout() {
     return (

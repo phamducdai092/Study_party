@@ -1,11 +1,13 @@
 import "./App.css";
 import { BrowserRouter, useRoutes } from "react-router-dom";
-import { routes } from "./routes";
+import { routes } from "./routes/routes";
 import { ThemeProvider } from "./components/theme/theme-provider";
 import { Toaster } from "./components/ui/sonner";
-import useAuthStore from "./store/auth/authStore";
+import useAuthStore from "./store/auth.store";
 import React, { useEffect, useRef } from "react";
-import { getAccess } from "@/lib/token";
+import ScrollToTop from "@/components/common/ScrollToTop";
+import BackToTop from "@/components/common/BackToTop";
+import { runBootstrap } from "@/boostrap";
 
 function AppRoutes() {
     return useRoutes(routes);
@@ -18,23 +20,25 @@ function AppGate({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-    const loadMe = useAuthStore((s) => s.loadMe);
     const didInit = useRef(false);
 
     useEffect(() => {
         if (didInit.current) return;
         didInit.current = true;
-        const token = getAccess();
-        if (!token || token === "null" || token === "undefined" || token.trim() === "") return;
-        loadMe().catch(() => {});
-    }, [loadMe]);
+        // Chạy toàn bộ bootstrap (auth + enums + …)
+        runBootstrap().catch(() => {
+            // an toàn: không crash app nếu 1 nhánh bootstrap fail
+        });
+    }, []);
 
     return (
         <BrowserRouter>
             <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
                 <AppGate>
+                    <ScrollToTop />
                     <AppRoutes />
                     <Toaster />
+                    <BackToTop />
                 </AppGate>
             </ThemeProvider>
         </BrowserRouter>

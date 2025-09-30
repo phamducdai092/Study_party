@@ -1,5 +1,4 @@
 @import "tailwindcss";
-
 @plugin "tailwindcss-animate";
 @custom-variant dark (&:is(.dark *));
 
@@ -17,8 +16,13 @@ html, body, #root {
 }
 
 html {
-    overflow-y: auto;                 /* đừng để hidden */
-    scrollbar-gutter: stable both-edges;
+    scrollbar-gutter: stable;
+    scroll-behavior: auto;
+}
+
+/* Fallback cho trình duyệt chưa hỗ trợ */
+@supports not (scrollbar-gutter: stable) {
+    html { overflow-y: scroll; }  /* luôn chừa chỗ scrollbar */
 }
 
 /* ============================
@@ -72,7 +76,7 @@ html {
 
     /* Sidebar */
     --sidebar-width: 16rem;
-    --sidebar-collapsed: 3.75rem;
+    --sidebar-width-icon: 3.75rem;
 
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
@@ -213,20 +217,52 @@ html {
     --radius-lg: 0.5rem;
     --radius-xl: 0.75rem;
     --radius-2xl: 1rem;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
 }
 
 /* Utilities for sidebar title clamp */
-.sidebar-title {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+/*.sidebar-title {*/
+/*    white-space: nowrap;*/
+/*    overflow: hidden;*/
+/*    text-overflow: ellipsis;*/
+/*}*/
 
-[data-state="collapsed"] .sidebar-title,
-[data-collapsed="true"] .sidebar-title {
-    display: none;
-}
+/*[data-variant="sidebar"]{*/
+/*    !* nhiều build dùng flex-basis thay cho width *!*/
+/*    flex: 0 0 var(--sidebar-width);*/
+/*    width: var(--sidebar-width);*/
+/*    transition: width 200ms ease, flex-basis 200ms ease;*/
+/*    overflow-x: hidden;*/
+/*}*/
 
-@supports not (scrollbar-gutter: stable) {
-    html { overflow-y: scroll; }      /* luôn hiển thị rãnh cuộn */
-}
+/*!* Khi collapsed: override biến GỐC mà lib đang dùng *!*/
+/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"]{*/
+/*    --sidebar-width: var(--sidebar-width-icon) !important;*/
+/*}*/
+
+/*!* Ẩn nhãn khi collapsed để không bị “thò”/đè *!*/
+/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"] .sidebar-title,*/
+/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"] [data-slot="sidebar-group-label"],*/
+/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"] .sidebar-label{*/
+/*    display: none;*/
+/*    pointer-events: none;*/
+/*}*/
+
+/*!* Content tránh tràn *!*/
+/*[data-variant="inset"]{ min-width: 0; }*/
+
+/*@layer base {*/
+/*  * {*/
+/*    @apply border-border outline-ring/50;*/
+/*    }*/
+/*  body {*/
+/*    @apply bg-background text-foreground;*/
+/*    }*/
+/*}*/

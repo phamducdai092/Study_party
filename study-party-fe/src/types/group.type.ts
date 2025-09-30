@@ -1,10 +1,24 @@
+export type RoomState = {
+    userRoomsJoined: Room[];
+    userRoomsOwned: Room[];
+    setRoomsUserJoined: (rooms: Room[]) => void;
+    setRoomUserOwned: (rooms: Room[]) => void;
+}
+
 export type Room = {
     id: string;
+    name: string;
+    slug: string;
     topic: string;
-    groupName: string;
+    topicColor: string;
+    maxMembers: number;
     memberCount: number;
-    onlineCount: number;
-    owner: string;
+};
+
+export type RoomCreatePayload = {
+    name: string;
+    description?: string;
+    
 };
 
 export type TopicProps = {

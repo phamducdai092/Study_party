@@ -5,17 +5,38 @@ import type {SharedFile} from "@/types/file.type.ts";
 
 export type User = {
     id: number;
-    avatar_url?: string;
-    display_name: string | "Bạn mới";
+    avatarUrl: string;
+    bannerUrl: string;
+    displayName: string | "Bạn mới";
     email: string;
     looked: boolean;
     online: boolean;
     verified: boolean;
     bio: string;
-    phone_number?: string;
-    date_of_birth?: string;
+    phoneNumber: string;
+    dateOfBirth: string;
     role: 'USER' | 'ADMIN';
 };
+
+export type UserInformationUpdatePayload = {
+    avatarUrl?: string;
+    bannerUrl?: string;
+    displayName?: string;
+    bio?: string;
+    phoneNumber?: string;
+    dateOfBirth?: string;
+}
+
+export type UserInformationResponse = {
+    id: number;
+    email: string;
+    avatarUrl: string;
+    bannerUrl: string;
+    displayName: string;
+    bio: string;
+    phoneNumber: string;
+    dateOfBirth: string;
+}
 
 export interface ProfilePageProps {
     user?: User;

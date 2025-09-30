@@ -1,7 +1,6 @@
-// src/routes/PrivateRoute.tsx
 import {Navigate, Outlet, useLocation} from "react-router-dom";
 import {useEffect} from "react";
-import useAuthStore from "@/store/auth/authStore";
+import useAuthStore from "@/store/auth.store.ts";
 import {getAccess} from "@/lib/token";
 
 export default function PrivateRoute() {
