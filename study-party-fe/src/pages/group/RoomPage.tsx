@@ -67,7 +67,7 @@ export default function RoomPage() {
                 <section className="space-y-3">
                     <div className="flex items-center justify-between">
                         <h2 className="text-base font-semibold flex items-center gap-2">
-                            <Star className="h-4 w-4"/> Phòng nổi bật</h2>
+                            <Star className="h-4 w-4"/> Phòng của tôi</h2>
                         <Button variant="ghost" size="sm">Xem thêm</Button>
                     </div>
                     <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">

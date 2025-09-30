@@ -2,7 +2,7 @@ import type {RouteObject} from "react-router-dom";
 import MainLayout from "@/layouts/MainLayout.tsx";
 import AdminLayout from "@/layouts/AdminLayout";
 
-import HomePage from "@/pages/HomePage";
+import HomePage from "@/pages/home/HomePage.tsx";
 import Login from "@/pages/auth/Login";
 import Register from "@/pages/auth/Register";
 import UserProfilePage from "@/pages/user/UserProfilePage";
@@ -15,7 +15,6 @@ import RoomDetail from "@/components/features/group/RoomDetail.tsx";
 import RoomPage from "@/pages/group/RoomPage.tsx";
 import {FlashcardsPage} from "@/pages/flashcard/FlashCardsPage.tsx";
 import {DocumentsPage} from "@/pages/document/DocumentsPage.tsx";
-import SettingsLayout from "@/layouts/SettingLayout.tsx";
 import {lazy} from "react";
 
 const ProfilePage = lazy(() => import("../pages/settings/ProfilePage.tsx"));
@@ -27,11 +26,10 @@ const NotificationsPage = lazy(() => import("../pages/settings/NotificationPage.
 // const AppearancePage = lazy(()=>import("./AppearancePage"));
 
 export const routes: RouteObject[] = [
-    // NHÁNH KHÔNG SIDEBAR
+
     {path: "/login", element: <Login/>},
     {path: "/register", element: <Register/>},
 
-    // NHÁNH APP CÓ SIDEBAR (MainLayout DUY NHẤT)
     {
         path: "/",
         element: <MainLayout/>,
@@ -47,7 +45,7 @@ export const routes: RouteObject[] = [
                     {path: "docs", element: <DocumentsPage/>},
                     {
                         path: "/settings",
-                        element: <SettingsLayout/>,
+                        // element: <SettingsLayout/>,
                         children: [
                             {index: true, element: <ProfilePage/>},
                             {path: "account", element: <AccountPage/>},
@@ -60,11 +58,9 @@ export const routes: RouteObject[] = [
                     },
                 ],
             },
-            // … thêm các page khác của app ở đây
         ],
     },
 
-    // NHÁNH ADMIN (layout riêng, KHÔNG dùng MainLayout)
     {
         path: "/admin",
         element: <AdminLayout/>,
@@ -79,7 +75,5 @@ export const routes: RouteObject[] = [
         ],
     },
 
-
-    // 404 CHUNG (1 cái duy nhất)
     {path: "*", element: <NotFound/>},
 ];

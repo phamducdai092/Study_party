@@ -1,4 +1,3 @@
-// import {useLocation} from "react-router-dom";
 import {
     Sidebar,
     SidebarContent, SidebarFooter,
@@ -11,13 +10,12 @@ import {
     Home,
     BookOpen,
     Command,
-    Bot,
     Settings2,
-    LifeBuoy, Send, Frame, PieChart, Map
+    LifeBuoy, Send, Frame, PieChart, Map, User, School, Files
 } from "lucide-react";
 import {NavMain} from "@/components/common/sidebar/nav-main.tsx";
-import {NavProjects} from "@/components/common/sidebar/nav-projects.tsx";
-import {NavSecondary} from "@/components/common/sidebar/nav-secondary.tsx";
+// import {NavProjects} from "@/components/common/sidebar/nav-projects.tsx";
+// import {NavSecondary} from "@/components/common/sidebar/nav-secondary.tsx";
 import {NavUser} from "@/components/common/sidebar/nav-user.tsx";
 import useAuthStore from "@/store/auth.store.ts";
 
@@ -35,86 +33,34 @@ import useAuthStore from "@/store/auth.store.ts";
 const data = {
     navMain: [
         {
-            // const items = [
-            //     {to: "/", label: "Home", icon: Home},
-            //     {to: "/me", label: "Profile", icon: User},
-            //     {to: "/rooms", label: "Phòng học", icon: School, disabled: true},
-            //     {to: "/flashcard", label: "Flashcard", icon: BookOpen, disabled: true},
-            //     {to: "/docs", label: "Tài liệu", icon: Files, disabled: true},
-            //     {to: "/settings", label: "Settings", icon: Settings, disabled: true},
-            // ];
-            title: "Các trang chính",
-            url: "#",
+            title: "Trang chủ",
+            url: "/",
             icon: Home,
             isActive: true,
-            items: [
-                {
-                    title: "Trang chủ",
-                    url: "/",
-                },
-                {
-                    title: "Trang cá nhân",
-                    url: "/me",
-                },
-                {
-                    title: "Phòng học",
-                    url: "/rooms",
-                },
-                {
-                    title: "Flashcards",
-                    url: "/flashcard",
-                },
-                {
-                    title: "Tài liệu",
-                    url: "/docs",
-                },
-            ],
         },
         {
-            title: "Models",
-            url: "#",
-            icon: Bot,
-            items: [
-                {
-                    title: "Genesis",
-                    url: "#",
-                },
-                {
-                    title: "Explorer",
-                    url: "#",
-                },
-                {
-                    title: "Quantum",
-                    url: "#",
-                },
-            ],
+            title: "Trang cá nhân",
+            url: "/me",
+            icon: User,
         },
         {
-            title: "Documentation",
-            url: "#",
+            title: "Phòng học",
+            url: "/rooms",
+            icon: School,
+        },
+        {
+            title: "FlashCards",
+            url: "/flashcard",
             icon: BookOpen,
-            items: [
-                {
-                    title: "Introduction",
-                    url: "#",
-                },
-                {
-                    title: "Get Started",
-                    url: "#",
-                },
-                {
-                    title: "Tutorials",
-                    url: "#",
-                },
-                {
-                    title: "Changelog",
-                    url: "#",
-                },
-            ],
         },
         {
-            title: "Settings",
-            url: "#",
+            title: "Tài liêu",
+            url: "/docs",
+            icon: Files,
+        },
+        {
+            title: "Cài đặt",
+            url: "/settings",
             icon: Settings2,
             items: [
                 {
@@ -180,7 +126,7 @@ export default function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href="#">
+                            <a href="/">
                                 <div
                                     className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                                     <Command className="size-4"/>
@@ -197,8 +143,8 @@ export default function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={data.navMain}/>
-                <NavProjects projects={data.projects}/>
-                <NavSecondary items={data.navSecondary} className="mt-auto"/>
+                {/*<NavProjects projects={data.projects}/>*/}
+                {/*<NavSecondary items={data.navSecondary} className="mt-auto"/>*/}
             </SidebarContent>
             <SidebarFooter>
                 <NavUser name={user!.displayName} email={user!.email} avatar={user!.avatarUrl}/>

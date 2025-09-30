@@ -66,7 +66,7 @@ export default function Header() {
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="rounded-full p-0" type="button">
                                     <AvatarDisplay src={user!.avatarUrl} fallback={user!.displayName}
-                                                   alt={user!.displayName} size={46} fit="cover"/>
+                                                   alt={user!.displayName} size={46} />
                                 </Button>
                             </DropdownMenuTrigger>
 

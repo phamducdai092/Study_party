@@ -24,7 +24,7 @@ export default function ProfilePage() {
     const age = useMemo(() => calcAge(u.dateOfBirth), [u.dateOfBirth]);
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-8 p-6 max-w-7xl mx-auto">
             <Card>
                 {/* banner + avatar */}
                 <AvatarBannerPicker
