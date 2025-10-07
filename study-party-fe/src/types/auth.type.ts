@@ -6,6 +6,7 @@ export type AuthState = {
 	loading: boolean;
 	error: string | null;
 	login: (payload: LoginPayload) => Promise<void>;
+	register: (payload: RegisterPayload) => Promise<void>;
 	logout: () => void;
 	loadMe: () => Promise<void>;
 	setUser: (user: User | null) => void;

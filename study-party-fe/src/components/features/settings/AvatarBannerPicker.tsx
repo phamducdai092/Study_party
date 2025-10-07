@@ -1,6 +1,6 @@
-import {Button} from "@/components/ui/button";
+import {Button} from "@/components/ui/button.tsx";
 import {Image as ImageIcon, Camera} from "lucide-react";
-import AvatarDisplay from "@/components/shared/AvatarDisplay";
+import AvatarDisplay from "@/components/shared/AvatarDisplay.tsx";
 
 export default function AvatarBannerPicker({
                                                avatarPreview, bannerPreview,

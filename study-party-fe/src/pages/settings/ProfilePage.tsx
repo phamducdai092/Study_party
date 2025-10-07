@@ -5,8 +5,8 @@ import {Mail} from "lucide-react";
 import {useMemo} from "react";
 import {calcAge} from "@/utils/date";
 import useAuthStore from "@/store/auth.store";
-import AvatarBannerPicker from "@/components/settings/AvatarBannerPicker";
-import ProfileForm from "@/components/settings/ProfileForm";
+import AvatarBannerPicker from "@/components/features/settings/AvatarBannerPicker";
+import ProfileForm from "@/components/features/settings/ProfileForm";
 import {useUserProfile} from "@/hooks/useUserProfile";
 
 export default function ProfilePage() {

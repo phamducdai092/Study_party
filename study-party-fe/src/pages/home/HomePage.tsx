@@ -8,12 +8,12 @@ import type {EnumItem} from "@/types/enum.type.ts"
 import {getEnumItem} from "@/utils/enumItemExtract.ts"
 
 
-import {HeroBanner} from "@/pages/home/HeroBanner.tsx"
-import {StreakCard} from "@/pages/home/StreakCard.tsx"
-import {type QuickStat, QuickStats} from "@/pages/home/QuickStats.tsx"
-import {WeekProgress, type ProgressItem} from "@/pages/home/WeekProgress.tsx"
-import {GroupsBlock} from "@/pages/home/GroupsBlock.tsx"
-import {ScheduleToday, type TodayEvent} from "@/pages/home/ScheduleToday.tsx";
+import {HeroBanner} from "@/components/features/home/HeroBanner.tsx"
+import {StreakCard} from "@/components/features/home/StreakCard.tsx"
+import {type QuickStat, QuickStats} from "@/components/features/home/QuickStats.tsx"
+import {WeekProgress, type ProgressItem} from "@/components/features/home/WeekProgress.tsx"
+import {GroupsBlock} from "@/components/features/home/GroupsBlock.tsx"
+import {ScheduleToday, type TodayEvent} from "@/components/features/home/ScheduleToday.tsx";
 
 export default function HomePage() {
     const {user} = useAuthStore()

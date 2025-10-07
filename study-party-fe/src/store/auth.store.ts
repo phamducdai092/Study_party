@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import type { AuthState, LoginPayload } from '@/types/auth.type.ts';
+import type {AuthState, LoginPayload, RegisterPayload} from '@/types/auth.type.ts';
 import {
 	loadMe as apiLoadMe,
-	login as apiLogin,
+	login as apiLogin, register,
 } from '@/services/auth.service.ts';
 import { clearTokens, setTokens } from '@/lib/token.ts';
 
@@ -28,6 +28,26 @@ const useAuthStore = create<AuthState>()(
 					if (!accessToken) throw new Error('No access token');
 					setTokens({ accessToken });
 					set({ user: user ?? null, userRoles: [user.role] , loading: false });
+				} catch (e: any) {
+					set({
+						error:
+							e?.response?.data?.message ||
+							e?.message ||
+							'Login failed',
+						loading: false,
+					});
+					throw e;
+				}
+			},
+
+			register: async (payload: RegisterPayload) => {
+				set({ loading: true, error: null});
+				try {
+					const res = await register(payload);
+					const { accessToken, user } = (res.data || {});
+					if(!accessToken) throw new Error('No access token');
+					setTokens({accessToken});
+					set({user: user ?? null, userRoles: [user.role], loading: false});
 				} catch (e: any) {
 					set({
 						error:

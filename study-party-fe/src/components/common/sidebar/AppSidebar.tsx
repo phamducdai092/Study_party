@@ -14,21 +14,9 @@ import {
     LifeBuoy, Send, Frame, PieChart, Map, User, School, Files
 } from "lucide-react";
 import {NavMain} from "@/components/common/sidebar/nav-main.tsx";
-// import {NavProjects} from "@/components/common/sidebar/nav-projects.tsx";
-// import {NavSecondary} from "@/components/common/sidebar/nav-secondary.tsx";
 import {NavUser} from "@/components/common/sidebar/nav-user.tsx";
 import useAuthStore from "@/store/auth.store.ts";
-
-
-// const settingItems = [
-//     {to: "/settings", label: "Hồ sơ", end: true},
-//     {to: "/settings/account", label: "Tài khoản"},
-//     {to: "/settings/security", label: "Bảo mật"},
-//     {to: "/settings/notifications", label: "Thông báo"},
-//     {to: "/settings/privacy", label: "Riêng tư"},
-//     {to: "/settings/connections", label: "Kết nối"},
-//     {to: "/settings/appearance", label: "Giao diện"},
-// ];
+import {NavLink} from "react-router-dom";
 
 const data = {
     navMain: [
@@ -36,32 +24,36 @@ const data = {
             title: "Trang chủ",
             url: "/",
             icon: Home,
-            isActive: true,
         },
         {
             title: "Trang cá nhân",
             url: "/me",
             icon: User,
+            match: "/me/*"
         },
         {
             title: "Phòng học",
             url: "/rooms",
             icon: School,
+            match: "/rooms/*"
         },
         {
             title: "FlashCards",
             url: "/flashcard",
             icon: BookOpen,
+            match: "/flashcard/*"
         },
         {
             title: "Tài liêu",
             url: "/docs",
             icon: Files,
+            match: "/docs/*"
         },
         {
             title: "Cài đặt",
             url: "/settings",
             icon: Settings2,
+            match: "/settings/*",
             items: [
                 {
                     title: "General",
@@ -126,7 +118,7 @@ export default function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href="/">
+                            <NavLink to="/">
                                 <div
                                     className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
                                     <Command className="size-4"/>
@@ -135,7 +127,7 @@ export default function AppSidebar() {
                                     <span className="truncate font-medium">Study party</span>
                                     <span className="truncate text-xs">Enterprise</span>
                                 </div>
-                            </a>
+                            </NavLink>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
@@ -147,7 +139,7 @@ export default function AppSidebar() {
                 {/*<NavSecondary items={data.navSecondary} className="mt-auto"/>*/}
             </SidebarContent>
             <SidebarFooter>
-                <NavUser name={user!.displayName} email={user!.email} avatar={user!.avatarUrl}/>
+                <NavUser name={user?.displayName} email={user?.email} avatar={user?.avatarUrl}/>
             </SidebarFooter>
         </Sidebar>
     );

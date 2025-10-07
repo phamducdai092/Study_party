@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { uploadToCloudinary } from "@/lib/cloudinary";
-import type {UploadOptions} from "@/types/cloudinary.type.tsx";
+import type {UploadOptions} from "@/types/cloudinary.type.ts";
 
 
 export function useCloudinaryUpload(initialOpts?: UploadOptions) {

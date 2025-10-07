@@ -41,7 +41,8 @@ export default function Login() {
             navigate(from, {replace: true});
         } catch (err) {
             if(err instanceof AxiosError) {
-                toast.error('Có lỗi đã xảy ra: ', err.response?.data);
+                setError(err.response?.data.message);
+                toast.error('Có lỗi đã xảy ra: ', err.response?.data.message);
             }  else if (err instanceof Error) {
                 console.error("General error:", err.message);
             }

@@ -5,7 +5,7 @@ import {Users, Star, Plus} from "lucide-react"
 import RoomCard from "@/components/features/group/RoomCard.tsx"
 import type {Room} from "@/types/group.type.ts"
 import type {EnumItem} from "@/types/enum.type.ts"
-import {QuickActions} from "@/pages/home/QuickActions.tsx";
+import {QuickActions} from "@/components/features/home/QuickActions.tsx";
 
 
 export function GroupsBlock({

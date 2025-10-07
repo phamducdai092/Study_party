@@ -25,6 +25,12 @@ html {
     html { overflow-y: scroll; }  /* luôn chừa chỗ scrollbar */
 }
 
+/* khi có phần tử fullscreen, ẩn scrollbar root để khỏi trừ 100vw */
+:root:has(:fullscreen) {
+    overflow: hidden;
+    scrollbar-gutter: auto;
+}
+
 /* ============================
    LIGHT TOKENS (Clear Sky)
    ============================ */
@@ -226,43 +232,3 @@ html {
     --color-sidebar-foreground: var(--sidebar-foreground);
     --color-sidebar: var(--sidebar);
 }
-
-/* Utilities for sidebar title clamp */
-/*.sidebar-title {*/
-/*    white-space: nowrap;*/
-/*    overflow: hidden;*/
-/*    text-overflow: ellipsis;*/
-/*}*/
-
-/*[data-variant="sidebar"]{*/
-/*    !* nhiều build dùng flex-basis thay cho width *!*/
-/*    flex: 0 0 var(--sidebar-width);*/
-/*    width: var(--sidebar-width);*/
-/*    transition: width 200ms ease, flex-basis 200ms ease;*/
-/*    overflow-x: hidden;*/
-/*}*/
-
-/*!* Khi collapsed: override biến GỐC mà lib đang dùng *!*/
-/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"]{*/
-/*    --sidebar-width: var(--sidebar-width-icon) !important;*/
-/*}*/
-
-/*!* Ẩn nhãn khi collapsed để không bị “thò”/đè *!*/
-/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"] .sidebar-title,*/
-/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"] [data-slot="sidebar-group-label"],*/
-/*[data-variant="sidebar"][data-collapsible="icon"][data-state="collapsed"] .sidebar-label{*/
-/*    display: none;*/
-/*    pointer-events: none;*/
-/*}*/
-
-/*!* Content tránh tràn *!*/
-/*[data-variant="inset"]{ min-width: 0; }*/
-
-/*@layer base {*/
-/*  * {*/
-/*    @apply border-border outline-ring/50;*/
-/*    }*/
-/*  body {*/
-/*    @apply bg-background text-foreground;*/
-/*    }*/
-/*}*/

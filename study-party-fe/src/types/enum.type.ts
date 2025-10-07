@@ -22,14 +22,3 @@ export type EnumState = {
     setEnums: (groups: EnumGroup[], version?: string) => void;
     get: (name: string) => EnumItem[];
 };
-
-// ApiResponse wrapper từ BE
-export type ApiResponse<T> = {
-    timestamp: string;
-    path: string;
-    status: number;
-    code: string;       // ví dụ: "Request was successful"
-    message: string;    // ví dụ: "Lấy dữ liệu thành công"
-    data: T;
-    meta: unknown | null;
-};

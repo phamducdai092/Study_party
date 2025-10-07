@@ -1,11 +1,11 @@
-import {Input} from "@/components/ui/input";
-import {Textarea} from "@/components/ui/textarea";
-import Field from "@/components/shared/Field";
+import {Input} from "@/components/ui/input.tsx";
+import {Textarea} from "@/components/ui/textarea.tsx";
+import Field from "@/components/shared/Field.tsx";
 import {Calendar as CalendarIcon, Phone, User2} from "lucide-react";
 import {useState} from "react";
-import {Button} from "@/components/ui/button";
-import {toDateInput} from "@/utils/date";
-import type {User} from "@/types/user.type";
+import {Button} from "@/components/ui/button.tsx";
+import {toDateInput} from "@/utils/date.ts";
+import type {User} from "@/types/user.type.ts";
 
 export default function ProfileForm({
                                         user,

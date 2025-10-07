@@ -34,7 +34,7 @@ export default function RoomPage() {
                 </div>
 
                 {/* Pomodoro cá nhân */}
-                <Pomodoro title="Pomodoro cá nhân"/>
+                <Pomodoro title="Pomodoro cá nhân" size="xl"/>
 
                 {/* Thanh search/filters (optional) */}
                 <div className="flex flex-wrap items-center gap-3">

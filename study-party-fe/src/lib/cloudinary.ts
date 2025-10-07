@@ -1,5 +1,5 @@
 import axios from "axios";
-import type {CloudinaryUploadResult, UploadOptions} from "@/types/cloudinary.type";
+import type {CloudinaryUploadResult, UploadOptions} from "@/types/cloudinary.type.ts";
 
 const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME!;
 const DEFAULT_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET!; // unsigned preset
