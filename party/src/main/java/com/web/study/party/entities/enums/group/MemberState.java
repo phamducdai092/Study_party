@@ -1,5 +1,6 @@
-package com.web.study.party.entities.enums;
+package com.web.study.party.entities.enums.group;
 
+import com.web.study.party.entities.enums.EnumMeta;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

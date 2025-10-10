@@ -1,6 +1,6 @@
 package com.web.study.party.dto.response.group;
 
-import com.web.study.party.entities.enums.GroupTopic;
+import com.web.study.party.entities.enums.group.GroupTopic;
 
 import java.time.Instant;
 

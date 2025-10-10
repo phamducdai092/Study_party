@@ -3,6 +3,10 @@ package com.web.study.party.services.enums;
 import com.web.study.party.dto.mapper.enums.EnumGroupDTO;
 import com.web.study.party.dto.mapper.enums.EnumMetaMapper;
 import com.web.study.party.entities.enums.*;
+import com.web.study.party.entities.enums.group.GroupTopic;
+import com.web.study.party.entities.enums.group.JoinPolicy;
+import com.web.study.party.entities.enums.group.MemberRole;
+import com.web.study.party.entities.enums.group.MemberState;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

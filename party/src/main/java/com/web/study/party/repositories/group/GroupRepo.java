@@ -31,12 +31,12 @@ public interface GroupRepo extends JpaRepository<StudyGroups, Long>, JpaSpecific
                 select count(m2.id)
                 from GroupMembers m2
                 where m2.groupId = g.id
-                  and m2.state = com.web.study.party.entities.enums.MemberState.APPROVED
+                  and m2.state = com.web.study.party.entities.enums.group.MemberState.APPROVED
               ) as memberCount
             from StudyGroups g
             join GroupMembers m on m.groupId = g.id
             where m.userId = :userId
-              and m.state = com.web.study.party.entities.enums.MemberState.APPROVED
+              and m.state = com.web.study.party.entities.enums.group.MemberState.APPROVED
             group by g.id, g.name, g.slug, g.topic, g.topicColor, g.maxMembers, g.updatedAt
             """,
             countQuery = """
@@ -44,7 +44,7 @@ public interface GroupRepo extends JpaRepository<StudyGroups, Long>, JpaSpecific
                     from StudyGroups g
                     join GroupMembers m on m.groupId = g.id
                     where m.userId = :userId
-                      and m.state = com.web.study.party.entities.enums.MemberState.APPROVED
+                      and m.state = com.web.study.party.entities.enums.group.MemberState.APPROVED
                     """
     )
     Page<GroupCardProjection> findJoinedGroupCards(@Param("userId") Long userId, Pageable pageable);
@@ -62,7 +62,7 @@ public interface GroupRepo extends JpaRepository<StudyGroups, Long>, JpaSpecific
                 select count(m2.id)
                 from GroupMembers m2
                 where m2.groupId = g.id
-                  and m2.state = com.web.study.party.entities.enums.MemberState.APPROVED
+                  and m2.state = com.web.study.party.entities.enums.group.MemberState.APPROVED
               ) as memberCount
             from StudyGroups g
             where g.ownerId = :userId

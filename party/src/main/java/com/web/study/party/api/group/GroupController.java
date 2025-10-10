@@ -7,7 +7,7 @@ import com.web.study.party.dto.response.group.GroupCardResponse;
 import com.web.study.party.dto.response.group.GroupResponse;
 import com.web.study.party.entities.Users;
 import com.web.study.party.entities.enums.CodeStatus;
-import com.web.study.party.entities.enums.MemberRole;
+import com.web.study.party.entities.enums.group.MemberRole;
 import com.web.study.party.services.group.GroupServiceImp;
 import com.web.study.party.utils.Paging;
 import com.web.study.party.utils.ResponseUtil;
@@ -38,7 +38,6 @@ public class GroupController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
             @RequestParam(required = false) String sort,
-            // ví dụ vài filter phổ biến, có thể thêm/bớt tuỳ m:
             @RequestParam(required = false) String topic,
             @RequestParam(required = false) String keyword,
             HttpServletRequest req
@@ -46,7 +45,6 @@ public class GroupController {
         Pageable pageable = Paging.parsePageable(page, size, sort);
         var result = service.getJoinedGroups(user.getId(), pageable);
 
-        // gom filters lại để FE giữ context
         return filterPageable(topic, keyword, req, result);
     }
 
@@ -56,7 +54,6 @@ public class GroupController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "12") int size,
             @RequestParam(required = false) String sort,
-            // ví dụ vài filter phổ biến, có thể thêm/bớt tuỳ m:
             @RequestParam(required = false) String topic,
             @RequestParam(required = false) String keyword,
             HttpServletRequest req
@@ -65,7 +62,6 @@ public class GroupController {
 
         var result = service.getOwnedGroups(user.getId(), pageable);
 
-        // gom filters lại để FE giữ context
         return filterPageable(topic, keyword, req, result);
     }
 

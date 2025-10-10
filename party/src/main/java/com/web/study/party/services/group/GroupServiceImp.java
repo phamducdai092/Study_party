@@ -5,8 +5,8 @@ import com.web.study.party.dto.mapper.group.GroupMapper;
 import com.web.study.party.dto.request.group.GroupCreateRequest;
 import com.web.study.party.dto.response.group.GroupCardResponse;
 import com.web.study.party.dto.response.group.GroupResponse;
-import com.web.study.party.entities.enums.MemberRole;
-import com.web.study.party.entities.enums.MemberState;
+import com.web.study.party.entities.enums.group.MemberRole;
+import com.web.study.party.entities.enums.group.MemberState;
 import com.web.study.party.entities.group.GroupMembers;
 import com.web.study.party.entities.group.StudyGroups;
 import com.web.study.party.exeption.BusinessException;
@@ -93,6 +93,11 @@ public class GroupServiceImp implements GroupService {
         groupRepo.deleteById(gid);
     }
 
+    @Override
+    public String joinCode(Long uid, Long gid) {
+        return "";
+    }
+
     @Transactional
     public String join(Long uid, Long gid) {
 
@@ -125,6 +130,11 @@ public class GroupServiceImp implements GroupService {
         memberRepo.save(m);
 
         return rs;
+    }
+
+    @Override
+    public void requestToJoin(Long uid, Long gid) {
+
     }
 
     @Transactional

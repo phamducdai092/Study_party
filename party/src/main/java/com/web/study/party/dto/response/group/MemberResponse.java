@@ -1,7 +1,7 @@
 package com.web.study.party.dto.response.group;
 
-import com.web.study.party.entities.enums.MemberRole;
-import com.web.study.party.entities.enums.MemberState;
+import com.web.study.party.entities.enums.group.MemberRole;
+import com.web.study.party.entities.enums.group.MemberState;
 
 import java.time.Instant;
 

@@ -1,6 +1,6 @@
 package com.web.study.party.repositories.group;
 
-import com.web.study.party.entities.enums.MemberState;
+import com.web.study.party.entities.enums.group.MemberState;
 import com.web.study.party.entities.group.GroupMembers;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

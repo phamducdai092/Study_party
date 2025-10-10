@@ -1,8 +1,9 @@
 package com.web.study.party.entities.group;
 
 import com.web.study.party.entities.ChatMessage;
-import com.web.study.party.entities.enums.GroupTopic;
-import com.web.study.party.entities.enums.JoinPolicy;
+import com.web.study.party.entities.enums.group.GroupPrivacy;
+import com.web.study.party.entities.enums.group.GroupTopic;
+import com.web.study.party.entities.enums.group.JoinPolicy;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,6 +42,9 @@ public class StudyGroups {
 
     @Enumerated(EnumType.STRING)
     JoinPolicy joinPolicy = JoinPolicy.OPEN;
+
+    @Enumerated(EnumType.STRING)
+    GroupPrivacy groupPrivacy = GroupPrivacy.PUBLIC;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "group", cascade = CascadeType.ALL)
     private List<ChatMessage> messages;
