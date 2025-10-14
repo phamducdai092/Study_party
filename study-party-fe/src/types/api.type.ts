@@ -11,11 +11,11 @@ export type ApiResponse<T> = {
     status: number;
     code: string;       // ví dụ: "Request was successful"
     message: string;    // ví dụ: "Lấy dữ liệu thành công"
-    data: T;
+    data: T | null;
     meta: unknown | null;
 };
 
-export type ApiError<T> = {
+export type ApiError = {
     timestamp: string;
     path: string;
     status: number;

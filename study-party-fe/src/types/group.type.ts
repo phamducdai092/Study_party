@@ -2,7 +2,7 @@ export type RoomState = {
     userRoomsJoined: Room[];
     userRoomsOwned: Room[];
     setRoomsUserJoined: (rooms: Room[]) => void;
-    setRoomUserOwned: (rooms: Room[]) => void;
+    setRoomsUserOwned: (rooms: Room[]) => void;
 }
 
 export type Room = {

@@ -1,7 +1,6 @@
 import axios, {
 	AxiosError,
-	type AxiosRequestConfig,
-	type AxiosResponse,
+	type AxiosRequestConfig
 } from "axios";
 import {
 	getAccess,
@@ -13,12 +12,22 @@ import {
 	failRefreshing,
 	queueRefresh,
 } from "./token";
+import {refreshToken} from "@/services/auth.service.ts";
+
+// 🔧 Normalize baseURL: bỏ trailing slash để tránh // khi ghép path
+const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
 
 // ⚙️ Base URL + cookies (bắt buộc for refresh cookie)
 const http = axios.create({
-	baseURL: import.meta.env.VITE_API_URL,
+	baseURL: API_BASE,
 	withCredentials: true,
-	// timeout: 15000, // bật nếu muốn
+	// timeout: 15000,
+});
+
+export const httpNoCredentials = axios.create({
+	baseURL: API_BASE,
+	withCredentials: false, // 👈 KHÔNG gửi cookie khi login/register
+	headers: { "Content-Type": "application/json" },
 });
 
 // ───────────────────────────────────────────────────────────────────────────────
@@ -26,7 +35,6 @@ const http = axios.create({
 // ───────────────────────────────────────────────────────────────────────────────
 function getPath(u?: string): string {
 	if (!u) return "";
-	// axios config.url có thể là relative hoặc absolute
 	try {
 		if (/^https?:\/\//i.test(u)) return new URL(u).pathname;
 		return u.startsWith("/") ? u : "/" + u;
@@ -58,10 +66,22 @@ function attachAccess(config: AxiosRequestConfig, token?: string) {
 	return config;
 }
 
+// 🚧 Chuẩn hoá url relative: ép bỏ leading slash để khớp baseURL đã cắt trailing
+function normalizeRelativeUrl(u?: string): string | undefined {
+	if (!u) return u;
+	if (/^https?:\/\//i.test(u)) return u; // absolute thì kệ
+	return u.replace(/^\/+/, ""); // "/groups/joined" -> "groups/joined"
+}
+
 // ───────────────────────────────────────────────────────────────────────────────
-// Request interceptor: gắn Authorization nếu có accessToken và không phải auth public
+// Request interceptor: gắn Authorization + normalize url
 // ───────────────────────────────────────────────────────────────────────────────
 http.interceptors.request.use((config) => {
+	// ⚠️ Loại bỏ leading slash để tránh tạo "//"
+	if (typeof config.url === "string") {
+		config.url = normalizeRelativeUrl(config.url);
+	}
+
 	if (!isPublicAuthUrl(config.url)) {
 		const access = getAccess?.();
 		if (access && access !== "null" && access !== "undefined" && access.trim()) {
@@ -75,72 +95,64 @@ http.interceptors.request.use((config) => {
 // Response interceptor: handle 401 → refresh queue (không loop /auth/refresh)
 // ───────────────────────────────────────────────────────────────────────────────
 http.interceptors.response.use(
-	(res: AxiosResponse) => res,
+	(res) => {
+		// --- UNWRAP ---
+		const rt = res.config?.responseType;
+		if (rt !== "blob" && rt !== "arraybuffer") {
+			const body = res.data;
+			(res as any).meta = body?.meta;
+			(res as any).raw  = body;
+			(res as any).data = body && typeof body === "object" && "data" in body ? body.data : body;
+		}
+		return res;
+	},
 	async (error: AxiosError) => {
 		const status = error.response?.status;
 		const original = (error.config || {}) as AxiosRequestConfig & { _retry?: boolean };
 		const url = original?.url || "";
 
-		// Nếu lỗi không phải 401, trả về luôn
-		if (status !== 401) {
+		// bắt 401 và 403
+		if (status !== 401 && status !== 403 /* && status !== 419 */) {
 			return Promise.reject(error);
 		}
-
-		// 401 cho chính /auth/refresh hoặc /auth/login → không cố gắng refresh nữa
 		if (isRefreshUrl(url) || getPath(url).startsWith("/auth/login")) {
-			// Dọn auth state để FE chuyển hướng login (tuỳ logic app)
 			clearTokens?.();
 			return Promise.reject(error);
 		}
-
-		// Tránh retry vô hạn trên cùng request
 		if (original._retry) {
 			clearTokens?.();
 			return Promise.reject(error);
 		}
 
-		// Nếu đang refresh: xếp hàng đợi token mới
 		if (getRefreshing?.()) {
 			return new Promise((resolve, reject) => {
 				queueRefresh?.((newAccess) => {
 					if (!newAccess) return reject(error);
 					const cfg: AxiosRequestConfig = { ...original, _retry: true };
+					cfg.url = normalizeRelativeUrl(cfg.url);
 					attachAccess(cfg, newAccess);
 					resolve(http(cfg));
 				});
 			});
 		}
 
-		// Bắt đầu refresh
 		startRefreshing?.();
 		try {
-			// Dùng axios gốc (không interceptor) + withCredentials để mang cookie refresh
-			const { data } = await axios.post(
-				`${import.meta.env.VITE_API_URL}/auth/refresh`,
-				{},
-				{ withCredentials: true }
-			);
-			const newAccess: string | undefined =
-				(data as any)?.data?.accessToken || (data as any)?.accessToken;
-
+			const { data } = await refreshToken();
+			const newAccess: string | undefined = (data as any)?.data?.accessToken || (data as any)?.accessToken;
 			if (!newAccess) {
-				failRefreshing?.();
-				clearTokens?.();
+				failRefreshing?.(); clearTokens?.();
 				return Promise.reject(error);
 			}
-
-			// Lưu token mới + đánh thức hàng đợi
 			setTokens?.({ accessToken: newAccess });
 			doneRefreshing?.(newAccess);
 
-			// Retry request gốc với token mới
 			const retryCfg: AxiosRequestConfig = { ...original, _retry: true };
+			retryCfg.url = normalizeRelativeUrl(retryCfg.url);
 			attachAccess(retryCfg, newAccess);
 			return http(retryCfg);
 		} catch (e) {
-			// Refresh thất bại: dọn dẹp và thông báo fail cho hàng đợi
-			failRefreshing?.();
-			clearTokens?.();
+			failRefreshing?.(); clearTokens?.();
 			return Promise.reject(error);
 		}
 	}

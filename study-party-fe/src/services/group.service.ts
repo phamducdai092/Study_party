@@ -1,6 +1,6 @@
 import http from "@/lib/http";
 import type {PagingPayload} from "@/types/paging.type.ts";
-import type {ApiResponse} from "@/types/enum.type.ts";
+import type {ApiResponse} from "@/types/api.type.ts";
 import type {Room} from "@/types/group.type.ts";
 
 export const getRoomsUserJoined = async (pagingPayload?: PagingPayload) => {

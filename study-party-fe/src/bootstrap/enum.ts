@@ -8,5 +8,5 @@ import { getAllEnums } from "@/services/enum.service.ts";
 export async function bootstrapEnums() {
     const groups = await getAllEnums();
     const etag = undefined; // nếu dùng axios interceptor -> lấy từ res.headers['etag']
-    useEnumStore.getState().setEnums(groups, etag);
+    useEnumStore.getState().setEnums(groups.data ?? [], etag);
 }

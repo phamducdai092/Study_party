@@ -38,7 +38,7 @@ export default function UserProfilePage() {
                         />
                     </div>
                     <div className="flex items-end gap-6 px-8 -mt-2 pb-6 relative z-10">
-                        <AvatarDisplay src={user!.avatarUrl} fallback={user!.displayName}
+                        <AvatarDisplay src={user?.avatarUrl} fallback={user?.displayName}
                                        alt={user?.avatarUrl || "User Avatar"} size={124}/>
                         <div className="pb-2 flex-1">
                             <div className="flex items-center gap-4 mb-3">
@@ -154,12 +154,26 @@ export default function UserProfilePage() {
                                 <Button variant="ghost" size="sm">Xem tất cả <ChevronRight/></Button>
                             </div>
                         </CardHeader>
-                        <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">
-                            {myRooms.map(r => (
-                                <RoomCard key={r.id} room={r} enumItem={getEnumItem(groupEnum, r.topic)}
-                                          onClick={() => nav(`/rooms/${r.slug}`)}/>
-                            ))}
-                        </CardContent>
+                        {
+                            myRooms.length > 0 ?
+                                (
+                                    <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">
+                                        {myRooms.map(r => (
+                                            <RoomCard key={r.id} room={r} enumItem={getEnumItem(groupEnum, r.topic)}
+                                                      onClick={() => nav(`/rooms/${r.slug}`)}/>
+                                        ))}
+                                    </CardContent>
+                                )
+                                :
+                                (
+                                    <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-1">
+                                        <div className="text-sm text-center text-muted-foreground italic">Bạn chưa tham
+                                            gia nhóm học tập
+                                            nào. Hãy tham gia nhóm để bắt đầu học cùng nhau!
+                                        </div>
+                                    </CardContent>
+                                )
+                        }
                     </Card>
                 </div>
 

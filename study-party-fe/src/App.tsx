@@ -1,19 +1,19 @@
 import "./App.css";
-import { BrowserRouter, useRoutes } from "react-router-dom";
-import { routes } from "./routes/routes";
-import { ThemeProvider } from "./components/theme/theme-provider";
-import { Toaster } from "./components/ui/sonner";
+import {BrowserRouter, useRoutes} from "react-router-dom";
+import {routes} from "./routes/routes";
+import {ThemeProvider} from "./components/theme/theme-provider";
+import {Toaster} from "./components/ui/sonner";
 import useAuthStore from "./store/auth.store";
-import React, { useEffect, useRef } from "react";
+import React, {useEffect, useRef} from "react";
 import ScrollToTop from "@/components/common/ScrollToTop";
 import BackToTop from "@/components/common/BackToTop";
-import { runBootstrap } from "@/boostrap";
+import {runBootstrap} from "@/bootstrap/bootstrap.ts";
 
 function AppRoutes() {
     return useRoutes(routes);
 }
 
-function AppGate({ children }: { children: React.ReactNode }) {
+function AppGate({children}: { children: React.ReactNode }) {
     const hasHydrated = useAuthStore((s) => s._hydrated);
     if (!hasHydrated) return null;
     return <>{children}</>;
@@ -25,6 +25,7 @@ export default function App() {
     useEffect(() => {
         if (didInit.current) return;
         didInit.current = true;
+
         // Chạy toàn bộ bootstrap (auth + enums + …)
         runBootstrap().catch(() => {
             // an toàn: không crash app nếu 1 nhánh bootstrap fail
@@ -35,10 +36,10 @@ export default function App() {
         <BrowserRouter>
             <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
                 <AppGate>
-                    <ScrollToTop />
-                    <AppRoutes />
-                    <Toaster />
-                    <BackToTop />
+                    <ScrollToTop/>
+                    <AppRoutes/>
+                    <Toaster/>
+                    <BackToTop/>
                 </AppGate>
             </ThemeProvider>
         </BrowserRouter>

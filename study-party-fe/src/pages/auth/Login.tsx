@@ -15,7 +15,6 @@ import {toast} from 'sonner';
 import useAuthStore from '@/store/auth.store.ts';
 import {useLocation, useNavigate} from 'react-router-dom';
 import {AxiosError} from "axios";
-
 export default function Login() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -40,10 +39,10 @@ export default function Login() {
             toast.success('Đăng nhập thành công!');
             navigate(from, {replace: true});
         } catch (err) {
-            if(err instanceof AxiosError) {
+            if (err instanceof AxiosError) {
                 setError(err.response?.data.message);
                 toast.error('Có lỗi đã xảy ra: ', err.response?.data.message);
-            }  else if (err instanceof Error) {
+            } else if (err instanceof Error) {
                 console.error("General error:", err.message);
             }
         } finally {
@@ -137,7 +136,7 @@ export default function Login() {
                         </div>
                     </CardContent>
 
-                    <CardFooter className="pt-6">
+                    <CardFooter>
                         <div className="w-full text-center space-y-4">
                             <div className="flex items-center justify-between text-base">
                                 <a
@@ -155,9 +154,6 @@ export default function Login() {
                             </div>
 
                             <div className="pt-4 border-t border-gray-100">
-                                <p className="text-base text-gray-500 mb-3">
-                                    Tính năng nổi bật:
-                                </p>
                                 <div className="flex justify-center gap-6 text-base text-gray-600">
                                     <div className="flex items-center gap-1">
                                         <Users className="w-3 h-3 text-blue-500"/>

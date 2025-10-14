@@ -6,7 +6,6 @@ import {toast} from 'sonner';
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,
@@ -66,7 +65,7 @@ export default function Register() {
                 (<div className="w-full max-w-md">
                     {/* Login Card */}
                     <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
-                        <CardHeader className="text-center pb-4">
+                        <CardHeader className="text-center pb-0">
                             <CardTitle className="text-3xl font-semibold text-gray-800">
                                 <div className="flex justify-center items-center gap-2 mb-4">
                                     <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full">
@@ -77,9 +76,6 @@ export default function Register() {
                                     </h1>
                                 </div>
                             </CardTitle>
-                            <CardDescription className="text-base text-gray-600">
-                                Tham gia vào các nhóm học online của bạn
-                            </CardDescription>
                         </CardHeader>
 
                         <CardContent>
@@ -167,7 +163,7 @@ export default function Register() {
                             </div>
                         </CardContent>
 
-                        <CardFooter className="pt-6">
+                        <CardFooter>
                             <div className="w-full text-center space-y-4">
                                 <div className="flex items-center justify-end text-base">
                                     <a
@@ -178,9 +174,6 @@ export default function Register() {
                                     </a>
                                 </div>
                                 <div className="pt-4 border-t border-gray-100">
-                                    <p className="text-base text-gray-500 mb-3">
-                                        Tính năng nổi bật:
-                                    </p>
                                     <div className="flex justify-center gap-6 text-base text-gray-600">
                                         <div className="flex items-center gap-1">
                                             <Users className="w-3 h-3 text-blue-500"/>

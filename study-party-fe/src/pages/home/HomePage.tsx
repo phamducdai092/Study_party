@@ -82,7 +82,6 @@ export default function HomePage() {
                 {/* Quick Stats */}
                 <QuickStats stats={stats}/>
 
-
                 {/* Schedule + Week progress */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <ScheduleToday
@@ -91,7 +90,6 @@ export default function HomePage() {
                         onJoin={(e) => console.log("join", e.title)}
                         onView={(e) => console.log("view", e.title)}
                     />
-
 
                     <WeekProgress
                         totalLabel="Tổng thời gian"

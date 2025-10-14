@@ -1,13 +1,14 @@
 import http from "@/lib/http.ts";
-import type { AuthResponse, LoginPayload, RegisterPayload, TokenPair } from "@/types/auth.type.ts";
+import type { AuthResponse, LoginPayload, RegisterPayload } from "@/types/auth.type.ts";
 import { clearTokens } from "@/lib/token.ts";
+import type {TokenPair} from "@/types/token.type.ts";
 
 export const login = (payload: LoginPayload) => {
-	return http.post<AuthResponse>("auth/login", payload);
+	return http.post<AuthResponse>("auth/login", payload, { withCredentials: true });
 };
 
 export const register = (payload: RegisterPayload) => {
-	return http.post<AuthResponse>("auth/register", payload);
+	return http.post<AuthResponse>("auth/register", payload,  { withCredentials: true });
 };
 
 export const logout = () => {
@@ -20,5 +21,5 @@ export const loadMe = () => {
 };
 
 export const refreshToken = () => {
-    return http.post<TokenPair>("auth/refresh");
+    return http.post<TokenPair>("auth/refresh", {}, { withCredentials: true });
 }

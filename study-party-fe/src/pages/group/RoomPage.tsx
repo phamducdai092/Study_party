@@ -53,12 +53,25 @@ export default function RoomPage() {
                         </h2>
                         <Button variant="ghost" size="sm">Xem tất cả</Button>
                     </div>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">
-                        {joinedRooms.map(r => (
-                            <RoomCard key={r.id} room={r} enumItem={getEnumItem(groupEnum, r.topic)}
-                                      onClick={() => nav(`/rooms/${r.slug}`)}/>
-                        ))}
-                    </div>
+                    {joinedRooms.length > 0 ?
+                        (
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">
+                                {joinedRooms.map(r => (
+                                    <RoomCard key={r.id} room={r} enumItem={getEnumItem(groupEnum, r.topic)}
+                                              onClick={() => nav(`/rooms/${r.slug}`)}/>
+                                ))}
+                            </div>
+                        )
+                        :
+                        (
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-1">
+                                <div
+                                    className="col-span-1 rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                                    Bạn chưa tham gia phòng học nào. Hãy khám phá và tham gia một phòng học để bắt đầu!
+                                </div>
+                            </div>
+                        )
+                    }
                 </section>
 
                 <Separator/>
@@ -70,12 +83,24 @@ export default function RoomPage() {
                             <Star className="h-4 w-4"/> Phòng của tôi</h2>
                         <Button variant="ghost" size="sm">Xem thêm</Button>
                     </div>
-                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">
-                        {ownedRooms.map(r => (
-                            <RoomCard key={r.id} room={r} enumItem={getEnumItem(groupEnum, r.topic)}
-                                      onClick={() => nav(`/rooms/${r.slug}`)}/>
-                        ))}
-                    </div>
+                    {ownedRooms.length > 0 ?
+                        (<div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-2">
+                            {ownedRooms.map(r => (
+                                <RoomCard key={r.id} room={r} enumItem={getEnumItem(groupEnum, r.topic)}
+                                          onClick={() => nav(`/rooms/${r.slug}`)}/>
+                            ))}
+                        </div>)
+                        :
+                        (
+                            <div className="grid grid-cols-1 gap-3 sm:grid-cols-1 lg:grid-cols-1">
+                                <div
+                                    className="col-span-1 rounded-lg border border-dashed p-6 text-center text-sm text-muted-foreground">
+                                    Bạn chưa tạo phòng học nào. Hãy tạo phòng học để bắt đầu chia sẻ kiến thức với mọi
+                                    người!
+                                </div>
+                            </div>
+                        )
+                    }
                 </section>
             </div>
         </div>

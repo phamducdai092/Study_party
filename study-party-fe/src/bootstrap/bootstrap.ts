@@ -1,6 +1,7 @@
 import {bootstrapAuth} from "./auth";
 import {bootstrapEnums} from "./enum.ts";
 import {bootstrapGroups} from "./group.ts";
+import {getAccess} from "@/lib/token.ts";
 
 /**
  * Chạy mọi tác vụ khởi động cần thiết cho app.
@@ -10,6 +11,7 @@ export async function runBootstrap() {
     await Promise.all([
         bootstrapAuth(),
         bootstrapEnums(),
-        bootstrapGroups(),
+        // chỉ load group khi đã có access token
+        getAccess() ? bootstrapGroups() : Promise.resolve(),
     ]);
 }

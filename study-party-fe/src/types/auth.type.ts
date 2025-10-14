@@ -37,9 +37,3 @@ export type AuthResponse = {
 	refreshTtlSeconds?: number;
 	user: User;
 };
-
-export type TokenPair = {
-	accessToken: string;
-	refreshToken?: string;
-	refreshTtlSeconds: number;
-}

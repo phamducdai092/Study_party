@@ -5,16 +5,16 @@ import type {SharedFile} from "@/types/file.type.ts";
 
 export type User = {
     id: number;
-    avatarUrl: string;
-    bannerUrl: string;
-    displayName: string | "Bạn mới";
+    avatarUrl?: string;
+    bannerUrl?: string;
+    displayName?: string | "Bạn mới";
     email: string;
     looked: boolean;
     online: boolean;
     verified: boolean;
-    bio: string;
-    phoneNumber: string;
-    dateOfBirth: string;
+    bio?: string;
+    phoneNumber?: string;
+    dateOfBirth?: string;
     role: 'USER' | 'ADMIN';
 };
 
