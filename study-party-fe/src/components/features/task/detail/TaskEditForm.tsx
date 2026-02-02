@@ -22,7 +22,7 @@ import type {AssigneeResponse} from "@/types/user.type.ts";
 import type {TaskDetailResponse} from "@/types/task/task.type.ts";
 import AvatarDisplay from "@/components/shared/AvatarDisplay.tsx";
 
-// Schema update thêm assigneeIds
+// Schema
 const editSchema = z.object({
     title: z.string().min(5, "Tiêu đề ngắn quá (min 5)"),
     description: z.string().min(10, "Mô tả sơ sài quá (min 10)"),
@@ -30,8 +30,8 @@ const editSchema = z.object({
         message: "Deadline phải ở thì tương lai chứ bro!",
     }),
     submissionType: z.enum([SubmissionType.INDIVIDUAL, SubmissionType.GROUP]),
-    assigneeIds: z.array(z.number()), // Thêm field này
-    isAssignAll: z.boolean(), // Thêm cờ check giao tất cả
+    assigneeIds: z.array(z.number()),
+    isAssignAll: z.boolean(),
 });
 
 export type EditFormValues = z.infer<typeof editSchema>;
@@ -47,10 +47,10 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
     const [files, setFiles] = useState<File[]>([]);
     const [openCombobox, setOpenCombobox] = useState(false);
 
-    // 1. Lấy danh sách thành viên nhóm để chọn
+    // 1. Lấy danh sách thành viên
     const {data: memberData} = useGroupMembers(task?.groupId, {
         page: 0,
-        size: 100, // Lấy nhiều chút
+        size: 100,
         enabled: !!task?.groupId
     });
     const members = memberData?.items || [];
@@ -70,14 +70,10 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
     // 2. Load dữ liệu cũ vào Form
     useEffect(() => {
         if (task) {
-            // Check xem task đang giao cho ai
-            const currentAssigneeIds = task.assignees?.map((u: AssigneeResponse) => u.id) || [];
+            const currentAssigneeIds = task.assignees?.map((u: AssigneeResponse) => Number(u.id)) || [];
 
-            // Logic check "Assign All": Nếu số người được giao = 0 (logic cũ BE) hoặc = tổng thành viên (logic mới)
-            // Tạm thời nếu list assignee rỗng hoặc null -> coi như Assign All (tùy logic BE lúc tạo của m)
-            // Hoặc m có thể dựa vào một flag từ BE nếu có.
-            // Ở đây t set mặc định: Nếu có list cụ thể -> false, ngược lại true.
-            const isAll = currentAssigneeIds.length === 0;
+            // Logic: Nếu list rỗng thì coi như là Assign All (hoặc tùy logic BE của m)
+            const isAll = (task.assignees || []).length === 0;
 
             form.reset({
                 title: task.title,
@@ -99,13 +95,23 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
         setFiles(files.filter((_, i) => i !== index));
     };
 
-    // Toggle chọn member
-    const toggleMember = (memberId: number) => {
-        const currentIds = form.getValues("assigneeIds");
+    // 🔥 FIX 2: Hàm Toggle chuẩn chỉ Number
+    const toggleMember = (memberIdInput: number | string) => {
+        const memberId = Number(memberIdInput); // 1. Ép kiểu về Number cho chắc
+
+        // 2. Lấy list ID đang chọn hiện tại, ép hết về Number để so sánh
+        const currentIds = (form.getValues("assigneeIds") || []).map(Number);
+
         if (currentIds.includes(memberId)) {
-            form.setValue("assigneeIds", currentIds.filter(id => id !== memberId));
+            // CASE: Đã có -> Xóa (Bỏ dấu tích)
+            // Lọc bỏ thằng có id trùng ra khỏi mảng
+            const newIds = currentIds.filter(id => id !== memberId);
+            form.setValue("assigneeIds", newIds, { shouldValidate: true, shouldDirty: true });
         } else {
-            form.setValue("assigneeIds", [...currentIds, memberId]);
+            // CASE: Chưa có -> Thêm vào (Hiện dấu tích)
+            // Giữ nguyên mảng cũ + thằng mới
+            const newIds = [...currentIds, memberId];
+            form.setValue("assigneeIds", newIds, { shouldValidate: true, shouldDirty: true });
         }
     };
 
@@ -116,16 +122,12 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit((values) => {
-                // Logic submit: Nếu chọn Assign All -> Gửi mảng rỗng (hoặc mảng full member tùy BE)
-                // Ở đây t làm theo logic: All -> Gửi [], BE tự hiểu là giữ nguyên hoặc assign all
-                // Nhưng tốt nhất là gửi List ID chuẩn xác để BE update theo logic mới viết ở trên.
                 const finalAssignees = values.isAssignAll ? [] : values.assigneeIds;
                 onSubmit({...values, assigneeIds: finalAssignees}, files);
             })} className="space-y-6 px-1">
 
                 {/* Basic Info Block */}
-                <div
-                    className="space-y-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
+                <div className="space-y-4 p-4 bg-slate-50 dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800">
                     <FormField
                         control={form.control}
                         name="title"
@@ -181,7 +183,7 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
                     />
                 </div>
 
-                {/* --- ASSIGNEES SECTION (MỚI) --- */}
+                {/* --- ASSIGNEES SECTION --- */}
                 <div className="p-4 border rounded-2xl bg-white dark:bg-slate-950 space-y-4">
                     <FormField
                         control={form.control}
@@ -198,7 +200,13 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
                                         type="checkbox"
                                         className="w-5 h-5 accent-primary cursor-pointer"
                                         checked={field.value}
-                                        onChange={field.onChange}
+                                        onChange={(e) => {
+                                            field.onChange(e.target.checked);
+                                            // Nếu chọn Assign All thì clear list custom đi cho sạch
+                                            if (e.target.checked) {
+                                                form.setValue("assigneeIds", []);
+                                            }
+                                        }}
                                     />
                                 </FormControl>
                             </FormItem>
@@ -218,9 +226,9 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
                                                 <Button
                                                     variant="outline"
                                                     role="combobox"
-                                                    className={cn("w-full justify-between", !field.value.length && "text-muted-foreground")}
+                                                    className={cn("w-full justify-between", !field.value?.length && "text-muted-foreground")}
                                                 >
-                                                    {field.value.length > 0
+                                                    {field.value?.length > 0
                                                         ? `Đang chọn ${field.value.length} người`
                                                         : "Tìm kiếm thành viên..."}
                                                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
@@ -233,41 +241,52 @@ export default function TaskEditForm({task, onSubmit, onCancel, isPending}: Task
                                                 <CommandList>
                                                     <CommandEmpty>Không tìm thấy ai.</CommandEmpty>
                                                     <div className="max-h-[200px] overflow-auto">
-                                                        {members.map((item) => (
-                                                            <CommandItem
-                                                                key={item.member.id}
-                                                                value={`${item.member.displayName}-${item.member.id}`}
-                                                                onSelect={() => toggleMember(item.member.id)}
-                                                                className="cursor-pointer"
-                                                            >
-                                                                <div className="flex items-center gap-2 flex-1">
-                                                                    <Check
-                                                                        className={cn(
-                                                                            "mr-2 h-4 w-4 text-primary",
-                                                                            field.value.includes(item.member.id) ? "opacity-100" : "opacity-0"
-                                                                        )}
-                                                                    />
-                                                                    <AvatarDisplay src={item.member.avatarUrl}
-                                                                                   size={36}
-                                                                                   fallback={item.member.displayName}
-                                                                                   userId={item.member.id}
-                                                                                   showStatus={true}
-                                                                    />
-                                                                    <span>{item.member.displayName}</span>
-                                                                </div>
-                                                            </CommandItem>
-                                                        ))}
+                                                        {members.map((item) => {
+                                                            const mId = Number(item.member.id); // Ép kiểu ID của item dòng này
+
+                                                            // Check xem ông này đã được chọn chưa (để hiện tích)
+                                                            // field.value chính là cái assigneeIds m nói đó
+                                                            const isSelected = field.value?.includes(mId);
+
+                                                            return (
+                                                                <CommandItem
+                                                                    key={mId}
+                                                                    value={`${item.member.displayName}-${mId}`} // Value để search
+                                                                    onSelect={() => toggleMember(mId)} // Bấm vào gọi hàm toggle ở trên
+                                                                    className="cursor-pointer"
+                                                                >
+                                                                    <div className="flex items-center gap-2 flex-1">
+                                                                        {/* ICON DẤU TÍCH Ở ĐÂY */}
+                                                                        <Check
+                                                                            className={cn(
+                                                                                "mr-2 h-4 w-4 text-primary",
+                                                                                // Nếu isSelected = true -> Hiện (opacity-100), sai thì Ẩn
+                                                                                isSelected ? "opacity-100" : "opacity-0"
+                                                                            )}
+                                                                        />
+
+                                                                        <AvatarDisplay
+                                                                            src={item.member.avatarUrl}
+                                                                            size={36}
+                                                                            fallback={item.member.displayName}
+                                                                            userId={item.member.id}
+                                                                            showStatus={true}
+                                                                        />
+                                                                        <span>{item.member.displayName}</span>
+                                                                    </div>
+                                                                </CommandItem>
+                                                            );
+                                                        })}
                                                     </div>
                                                 </CommandList>
                                             </Command>
                                         </PopoverContent>
                                     </Popover>
 
-                                    {/* List Badges */}
-                                    {selectedAssigneeIds.length > 0 && (
+                                    {selectedAssigneeIds?.length > 0 && (
                                         <div className="flex flex-wrap gap-2 mt-2">
                                             {members
-                                                .filter(m => selectedAssigneeIds.includes(m.member.id))
+                                                .filter(m => selectedAssigneeIds.includes(Number(m.member.id)))
                                                 .map(m => (
                                                     <Badge key={m.member.id} variant="secondary"
                                                            className="pl-1 pr-2 py-1 flex items-center gap-1">

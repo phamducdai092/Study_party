@@ -3,9 +3,9 @@ import { persist, createJSONStorage } from 'zustand/middleware';
 import type {AuthState, LoginPayload, RegisterPayload} from '@/types/auth.type.ts';
 import {
 	loadMe as apiLoadMe,
-	login as apiLogin, register,
+	login as apiLogin, logout, register,
 } from '@/services/auth.service.ts';
-import { clearTokens, setTokens } from '@/lib/token.ts';
+import {setTokens } from '@/lib/token.ts';
 
 const useAuthStore = create<AuthState>()(
 	persist(
@@ -59,10 +59,10 @@ const useAuthStore = create<AuthState>()(
 				}
 			},
 
-			logout: () => {
-				clearTokens();
+			logout: async () => {
+				await logout();
+
 				set({ user: null });
-				window.location.href = '/';
 			},
 
 			loadMe: async () => {

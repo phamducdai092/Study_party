@@ -11,9 +11,14 @@ export const register = (payload: RegisterPayload) => {
 	return http.post<void>("auth/register", payload,  { withCredentials: true });
 };
 
-export const logout = () => {
-	clearTokens();
-	return http.post("auth/logout");
+export const logout = async () => {
+	try {
+		await http.post("/auth/logout");
+	} catch (error) {
+		console.error("Lỗi logout API:", error);
+	} finally {
+		clearTokens();
+	}
 };
 
 export const loadMe = () => {

@@ -39,6 +39,8 @@ export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: 
     const members = data?.items || [];
     const paging = data?.meta;
 
+    const currentQueryKey = groupKeys.list(groupId, currentPage, 5);
+
     // --- LOGIC XỬ LÝ ACTION ---
     const handleKickMember = async (memberId: number) => {
         try {
@@ -46,16 +48,13 @@ export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: 
             await kickGroupMember(groupId, memberId);
             toast.success("Đã loại thành viên khỏi nhóm");
 
-            // Update Cache: Lưu ý cấu trúc cache giờ đã đổi thành { items, meta }
-            queryClient.setQueryData(
-                groupKeys.list(groupId, currentPage, 5),
-                (old: any) => {
-                    return {
-                        ...old, // Giữ nguyên meta
-                        items: old.items.filter(m => m.member.id !== memberId) // Lọc mảng items
-                    };
-                }
-            );
+            queryClient.setQueryData(currentQueryKey, (old: any) => {
+                if (!old) return old;
+                return {
+                    ...old,
+                    items: old.items.filter((m: MemberResponse) => m.member.id !== memberId)
+                };
+            });
         } catch (error) {
             toast.error("Có lỗi xảy ra khi loại thành viên.");
         } finally {
@@ -64,35 +63,28 @@ export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: 
     }
 
     const handleChangeMemberRole = async (memberId: number, newMemberRole: MemberRole) => {
-        try {
-            setProcessingId(memberId);
-            await setMemberRole(groupId, memberId, newMemberRole);
-            toast.success("Đã thay đổi vai trò của thành viên.");
+        await queryClient.cancelQueries({ queryKey: currentQueryKey });
+        const previousData = queryClient.getQueryData(currentQueryKey);
+        queryClient.setQueryData(currentQueryKey, (old: GroupMemberQueryResult | undefined) => {
+            if (!old) return old;
+            return {
+                ...old,
+                items: old.items.map(m => {
+                    if (m.member.id === memberId) {
+                        return { ...m, role: newMemberRole };
+                    }
+                    return m;
+                })
+            };
+        });
 
-            // Update Cache thông minh
-            queryClient.setQueryData(
-                ["group-members", groupId, currentPage],
-                (old: GroupMemberQueryResult | undefined) => {
-                    if (!old) return old;
-                    return {
-                        ...old,
-                        items: old.items.map(m => {
-                            // Tìm đúng member đang sửa
-                            if (m.member.id === memberId) {
-                                // Trả về object mới với role mới
-                                return {...m, role: newMemberRole};
-                            }
-                            return m; // Các member khác giữ nguyên
-                        })
-                    };
-                }
-            );
+        try {
+            await setMemberRole(groupId, memberId, newMemberRole);
+            toast.success("Đã thay đổi vai trò.");
         } catch (error: any) {
-            console.log(error?.response?.data?.message ||
-                error?.message)
-            toast.error("Có lỗi xảy ra khi thay đổi vai trò.");
-        } finally {
-            setProcessingId(null);
+            queryClient.setQueryData(currentQueryKey, previousData);
+            console.log(error?.response?.data?.message || error?.message);
+            toast.error("Lỗi rồi đại vương ơi, rollback lại nhé!");
         }
     }
 

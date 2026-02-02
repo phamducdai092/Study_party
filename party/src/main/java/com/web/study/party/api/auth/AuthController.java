@@ -34,9 +34,6 @@ public class AuthController {
     private final JwtProperties jwtProps;
     private AuthResponse authResponse;
 
-    private final UserServiceImp userService;
-    private final UserMapper userMapper;
-
     @Value("${security.jwt.refresh-cookie-name:refresh_token}")
     private String refreshCookieName;
 

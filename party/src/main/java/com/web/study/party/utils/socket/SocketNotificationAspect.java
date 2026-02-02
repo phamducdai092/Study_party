@@ -25,24 +25,19 @@ public class SocketNotificationAspect {
     @AfterReturning(pointcut = "@annotation(socketNotify)", returning = "result")
     public void handleSocketNotification(SocketNotify socketNotify, Object result) {
         if (result == null) return;
-
         try {
             // 1. Giải mã SpEL để lấy Topic chuẩn
             // Context chứa biến #result chính là giá trị return của hàm
             StandardEvaluationContext context = new StandardEvaluationContext();
             context.setVariable("result", result);
-            
             String topic = parser.parseExpression(socketNotify.topic()).getValue(context, String.class);
-
             // 2. Tạo Message
             SocketMessage message = SocketMessage.builder()
                     .type(socketNotify.type())
                     .payload(result) // Mặc định lấy luôn kết quả trả về làm payload
                     .build();
-
             log.info("📢 AOP TRYING TO SEND: Topic=[{}] Type=[{}] Payload=[{}]",
                     topic, socketNotify.type(), result);
-
             // 3. Bắn tin
             messagingTemplate.convertAndSend(topic, message);
             

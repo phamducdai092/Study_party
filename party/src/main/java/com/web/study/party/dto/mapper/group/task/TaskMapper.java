@@ -2,6 +2,7 @@ package com.web.study.party.dto.mapper.group.task;
 
 import com.web.study.party.dto.mapper.user.UserMapper;
 import com.web.study.party.dto.response.group.task.*;
+import com.web.study.party.dto.response.user.UserBrief;
 import com.web.study.party.entities.task.Attachment;
 import com.web.study.party.entities.task.Task;
 import com.web.study.party.entities.task.TaskAssignment;
@@ -17,10 +18,7 @@ import java.util.List;
 public abstract class TaskMapper {
 
     @Autowired
-    protected TaskAssignmentRepository assignmentRepo;
-    
-    @Autowired
-    protected TaskSubmissionRepository submissionRepo;
+    private UserMapper userMapper;
 
     // --- 1. Map Task to TaskResponse ---
     @Mapping(target = "assignees", source = "assignments")

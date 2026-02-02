@@ -33,12 +33,9 @@ export default function Header() {
 
     const groupEnum: EnumItem[] = useEnumStore().get("GroupTopic");
 
-    const handleLogout = () => {
-        try {
-            logout?.();
-        } finally {
-            navigate("/", {replace: true});
-        }
+    const handleLogout = async () => {
+        await logout();
+        navigate("/");
     };
 
     return (

@@ -176,6 +176,7 @@ public class GroupServiceImp implements GroupService {
         List<GroupMembers> gms = memberRepo.findAllByGroupId(gid);
         for(GroupMembers gm : gms ) {
             gm.setState(MemberState.LEFT);
+            gm.setRole(MemberRole.GUEST);
         }
         groupMemberRepo.saveAll(gms);
         g.setDeleted(true);

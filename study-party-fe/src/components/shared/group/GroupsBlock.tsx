@@ -33,7 +33,7 @@ export function GroupsBlock({
             <CardContent>
                 {safeRooms.length > 0 ?
                     (<div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                        {safeRooms.slice(0, 4).map((r) => (
+                        {safeRooms.slice(0, 2).map((r) => (
                             <RoomCard
                                 key={r.id}
                                 room={r}

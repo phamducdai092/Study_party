@@ -4,7 +4,6 @@ import com.web.study.party.config.KafkaConfig;
 import com.web.study.party.dto.kafka.ChatMessagePayload;
 import com.web.study.party.dto.response.group.task.AttachmentResponse;
 import com.web.study.party.entities.Users;
-import com.web.study.party.entities.enums.group.MemberRole;
 import com.web.study.party.entities.enums.group.MemberState;
 import com.web.study.party.entities.enums.group.MessageType;
 import com.web.study.party.entities.group.GroupMembers;

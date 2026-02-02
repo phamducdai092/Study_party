@@ -28,5 +28,18 @@ public interface AttachmentRepository extends JpaRepository<Attachment, Long> {
     @Query("DELETE FROM Attachment a WHERE a.submission.id = :submissionId")
     void deleteBySubmissionId(@Param("submissionId") Long submissionId);
 
+    @Query("""
+        SELECT a FROM Attachment a
+        LEFT JOIN a.task t
+        LEFT JOIN a.submission s
+        LEFT JOIN s.task st
+        LEFT JOIN a.groupMessage gm
+        WHERE (t.groupId = :groupId OR st.groupId = :groupId OR gm.group.id = :groupId)
+        AND a.isDeleted = false
+    """)
+    Page<Attachment> findAllByGroupId(@Param("groupId") Long groupId, Pageable pageable);
+
+    Page<Attachment> findAllByUploadedByIdAndIsDeletedFalse(Long uploaderId, Pageable pageable);
+
     Page<AdminFileResponse> findByFileNameContainingIgnoreCase(String keyword, Pageable pageable);
 }

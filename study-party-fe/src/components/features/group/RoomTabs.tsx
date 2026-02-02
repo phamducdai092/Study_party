@@ -1,13 +1,13 @@
 import {MessageSquareText, Users, Files, UserPlus, ClipboardList, MessageCircle, FileCheck} from "lucide-react";
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {Button} from "@/components/ui/button";
 import {JoinRequestList} from "@/components/features/group/JoinRequestList";
 import {cn} from "@/lib/utils";
 import type {RoomDetail} from "@/types/group/group.type";
 import {GroupMemberList} from "@/components/features/group/GroupMemberList.tsx";
 import {GroupChatList} from "@/components/features/group/chat/GroupChatList.tsx";
 import TaskBoard from "@/components/features/task/TaskBoard.tsx";
+import {AttachmentList} from "@/components/features/attachment/AttachmentList.tsx";
 
 interface RoomTabsProps {
     activeTab: string;
@@ -84,12 +84,7 @@ export function RoomTabs({activeTab, onTabChange, canEdit, isGuest, roomData}: R
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="flex-1 min-h-0">
-                        {["DSA-cheatsheet.pdf", "cnpm-seq.puml"].map((f, i) => (
-                            <div key={i} className="flex items-center justify-between rounded-md border p-2">
-                                <div>{f}</div>
-                                <Button variant="outline" size="sm">Tải</Button>
-                            </div>
-                        ))}
+                        <AttachmentList groupId={roomData.id} />
                     </CardContent>
                 </Card>
             </TabsContent>

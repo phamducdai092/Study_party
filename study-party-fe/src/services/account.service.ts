@@ -1,6 +1,5 @@
 import http from "@/lib/http.ts";
 import type { ApiResponse } from "@/types/api.type.ts";
-// 👇 Nhớ bổ sung các type này vào file type tương ứng nhé
 import type {
     ConfirmVerifyEmailRequest,
     VerifyEmailRequest,

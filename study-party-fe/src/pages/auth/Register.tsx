@@ -1,8 +1,8 @@
-import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
+import {useState} from 'react';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {Label} from '@/components/ui/label';
+import {toast} from 'sonner';
 import {
     Card,
     CardContent,
@@ -10,12 +10,12 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { BookOpen, Users, Video, GraduationCap, ArrowLeft, Mail } from 'lucide-react';
-import { AxiosError } from "axios";
-import type { FieldError } from "@/types/api.type.ts";
+import {BookOpen, Users, Video, GraduationCap, ArrowLeft, Mail} from 'lucide-react';
+import {AxiosError} from "axios";
+import type {FieldError} from "@/types/api.type.ts";
 import useAuthStore from "@/store/auth.store.ts";
-import { accountService } from '@/services/account.service';
-import { useNavigate } from 'react-router-dom';
+import {accountService} from '@/services/account.service';
+import {useNavigate} from 'react-router-dom';
 
 export default function Register() {
     const navigate = useNavigate();
@@ -30,16 +30,18 @@ export default function Register() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<FieldError[]>([]);
 
-    const { register, login } = useAuthStore(); // Lấy hàm login để auto-login
+    const {register, login} = useAuthStore(); // Lấy hàm login để auto-login
 
     // --- BƯỚC 1: GỬI FORM ĐĂNG KÝ ---
     async function onSubmit() {
         if (!email || !password || !confirmPassword) {
-            setError([{ message: 'Vui lòng điền đầy đủ thông tin!' }]);
+            setError([{message: 'Vui lòng điền đầy đủ thông tin!'}]);
+            toast.error('Vui lòng điền đầy đủ thông tin!');
             return;
         }
         if (password !== confirmPassword) {
-            setError([{ message: 'Mật khẩu xác nhận không khớp' }]);
+            setError([{message: 'Mật khẩu xác nhận không khớp'}]);
+            toast.error('Mật khẩu xác nhận không khớp');
             return;
         }
 
@@ -48,17 +50,25 @@ export default function Register() {
 
         try {
             // Gọi hàm register (API backend đã sửa trả về void/success)
-            await register({ email, password });
+            await register({email, password});
 
             toast.success("Đăng ký thành công! Vui lòng kiểm tra email để lấy mã OTP.");
             setStep(2); // Chuyển sang màn nhập OTP
         } catch (err) {
+            let errorMessage = "Đã có lỗi xảy ra vui lòng thử lại.";
             if (err instanceof AxiosError) {
-                const msg = err.response?.data?.message || "Đăng ký thất bại";
-                toast.error(msg);
-                if (err.response?.data?.fieldErrors) {
-                    setError(err.response?.data.fieldErrors);
+                const responseMessage = err.response?.data?.message || "Đăng ký thất bại";
+                if (responseMessage) {
+                    if (Array.isArray(responseMessage)) {
+                        errorMessage = responseMessage.join(', ');
+                    } else {
+                        errorMessage = String(responseMessage);
+                    }
+                } else {
+                    errorMessage = err.message;
                 }
+                setError([{message: errorMessage}]);
+                toast.error(errorMessage);
             }
         } finally {
             setLoading(false);
@@ -83,10 +93,10 @@ export default function Register() {
             toast.success("Xác thực tài khoản thành công!");
 
             // 2. Tự động đăng nhập luôn
-            await login({ email, password });
+            await login({email, password});
 
             // 3. Chuyển về trang chủ
-            navigate('/', { replace: true });
+            navigate('/', {replace: true});
 
         } catch (err) {
             if (err instanceof AxiosError) {
@@ -98,7 +108,8 @@ export default function Register() {
     }
 
     return (
-        <div className="w-full min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
+        <div
+            className="w-full min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center p-4">
             <div className="w-full max-w-md">
                 <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
 
@@ -107,7 +118,7 @@ export default function Register() {
                         <CardTitle className="text-3xl font-semibold text-gray-800">
                             <div className="flex justify-center items-center gap-2 mb-4">
                                 <div className="p-3 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full">
-                                    <GraduationCap className="w-8 h-8 text-white" />
+                                    <GraduationCap className="w-8 h-8 text-white"/>
                                 </div>
                                 <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent py-2">
                                     {step === 1 ? 'Đăng ký' : 'Xác thực OTP'}
@@ -155,7 +166,8 @@ export default function Register() {
                                 </div>
 
                                 {error.length > 0 && (
-                                    <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
+                                    <div
+                                        className="p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600">
                                         {error.map((err, idx) => <div key={idx}>{err.message}</div>)}
                                     </div>
                                 )}
@@ -181,7 +193,7 @@ export default function Register() {
                                 <div className="space-y-2">
                                     <Label htmlFor="otp">Mã xác thực (OTP)</Label>
                                     <div className="relative">
-                                        <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                                        <Mail className="absolute left-3 top-3 w-5 h-5 text-gray-400"/>
                                         <Input
                                             id="otp"
                                             value={otp}
@@ -220,10 +232,17 @@ export default function Register() {
                                         Đã có tài khoản? Đăng nhập
                                     </a>
                                 </div>
-                                <div className="pt-4 border-t border-gray-100 flex justify-center gap-6 text-base text-gray-600">
-                                    <div className="flex items-center gap-1"><Users className="w-3 h-3 text-blue-500"/> Nhóm học</div>
-                                    <div className="flex items-center gap-1"><Video className="w-3 h-3 text-green-500"/> Video call</div>
-                                    <div className="flex items-center gap-1"><BookOpen className="w-3 h-3 text-purple-500"/> Tài liệu</div>
+                                <div
+                                    className="pt-4 border-t border-gray-100 flex justify-center gap-6 text-base text-gray-600">
+                                    <div className="flex items-center gap-1"><Users
+                                        className="w-3 h-3 text-blue-500"/> Nhóm học
+                                    </div>
+                                    <div className="flex items-center gap-1"><Video
+                                        className="w-3 h-3 text-green-500"/> Video call
+                                    </div>
+                                    <div className="flex items-center gap-1"><BookOpen
+                                        className="w-3 h-3 text-purple-500"/> Tài liệu
+                                    </div>
                                 </div>
                             </div>
                         )}

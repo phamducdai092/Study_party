@@ -70,7 +70,7 @@ public class ChatServiceImpl implements ChatService {
                     msg.getType(),
                     msg.getCreatedAt(),
                     true,
-                    attResponses // 👇 Trả về list file kèm tin nhắn cũ
+                    attResponses
             );
         });
     }

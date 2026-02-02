@@ -44,7 +44,7 @@ const data = {
         },
         {
             title: "Tài liêu",
-            url: "/docs",
+            url: "/me/attachments",
             icon: Files,
             match: "/docs/*"
         },

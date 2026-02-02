@@ -1,6 +1,7 @@
 package com.web.study.party.dto.mapper.group.task;
 
 import com.web.study.party.dto.response.admin.AdminFileResponse;
+import com.web.study.party.dto.response.group.task.AttachmentDetailResponse;
 import com.web.study.party.dto.response.group.task.AttachmentResponse;
 import com.web.study.party.entities.task.Attachment;
 import org.mapstruct.Mapper;
@@ -19,4 +20,9 @@ public interface AttachmentMapper {
     @Mapping(target = "fileUrl", source = "att.filePath")
     @Mapping(target = "uploadedById", source = "att.uploadedBy.id")
     AdminFileResponse toAdminFileResponse(Attachment att);
+
+    @Mapping(target = "uploadedBy.id", source = "att.uploadedBy.id")
+    @Mapping(target = "uploadedBy.displayName", source = "att.uploadedBy.displayName")
+    @Mapping(target = "uploadedBy.avatarUrl", source = "att.uploadedBy.avatarUrl")
+    AttachmentDetailResponse toDetailResponse(Attachment att);
 }

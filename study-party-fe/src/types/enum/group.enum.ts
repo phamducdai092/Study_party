@@ -20,7 +20,8 @@ export const MemberStateEnum = {
     PENDING: 'PENDING',
     APPROVED: 'APPROVED',
     REJECTED: 'REJECTED',
-    BANNED: 'BANNED'
+    BANNED: 'BANNED',
+    LEFT: 'LEFT',
 }
 
 export type MemberRole = typeof MemberRoleEnum[keyof typeof MemberRoleEnum];

@@ -8,6 +8,7 @@ import com.web.study.party.dto.response.TokenResponse;
 import com.web.study.party.dto.response.auth.AuthResponse;
 import com.web.study.party.entities.Users;
 import com.web.study.party.entities.enums.Role;
+import com.web.study.party.exception.BadRequestException;
 import com.web.study.party.exception.UnverifiedAccountException;
 import com.web.study.party.jwt.JwtProperties;
 import com.web.study.party.jwt.JwtService;
@@ -111,6 +112,11 @@ public class AuthServiceImp implements AuthService {
         }
 
         String jti = jws.getPayload().getId();
+
+        if (!refreshTokenStore.exists(jti)) {
+            throw new BadRequestException("Token đã bị thu hồi hoặc không tồn tại (đã logout)");
+        }
+
         String email = jws.getPayload().get("email", String.class);
         Users user = userRepo.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy user với email: " + email));

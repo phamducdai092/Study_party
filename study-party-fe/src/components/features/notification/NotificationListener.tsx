@@ -22,7 +22,6 @@ export function NotificationListener() {
     // --- 🛠 CHIẾN THUẬT XỬ LÝ (STRATEGY PATTERN) ---
     // Định nghĩa cách hiển thị cho từng loại thông báo tại đây
     const handleNotification = (notif: NotificationPayload) => {
-
         // Hàm chuyển trang an toàn
         const handleClick = () => {
             if (notif.link) navigate(notif.link);
@@ -95,7 +94,8 @@ export function NotificationListener() {
                     });
                 }
                 break;
-            case 'VIDEO_CALL_STARTED':
+
+            case SOCKET_EVENTS.VIDEO_CALL_STARTED:
                 toast.info("Cuộc gọi nhóm đang diễn ra 🎥", {
                     description: notif.content,
                     duration: 10000, // Để lâu chút (10s) cho người ta kịp thấy
@@ -122,7 +122,6 @@ export function NotificationListener() {
     useEffect(() => {
         const token = getAccess();
         if (!user?.id || !token) return;
-
         const socket = new SockJS(import.meta.env.VITE_API_URL + "/ws");
         const stompClient = new Client({
             webSocketFactory: () => socket,
@@ -140,24 +139,18 @@ export function NotificationListener() {
                             const notifPayload = msgBody.payload as NotificationPayload;
                             handleNotification(notifPayload);
 
-                            // TODO: Ở đây m có thể gọi thêm hàm cập nhật cái chuông thông báo (số lượng chưa đọc)
-                            // useNotificationStore.getState().incrementUnread();
                         }
                     } catch (e) {
                         console.error("Lỗi parse notification:", e);
                     }
                 });
             },
-            // Tắt log debug cho đỡ rác console
             debug: () => { /* console.log(str) */ }
         });
-
         stompClient.activate();
-
         return () => {
             if (stompClient.active) stompClient.deactivate();
         };
-    }, [user?.id, navigate]); // Thêm navigate vào dep
-
+    }, [user?.id, navigate]);
     return null;
 }

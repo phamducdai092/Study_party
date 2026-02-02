@@ -8,7 +8,9 @@ import com.web.study.party.dto.response.user.UserJoinRequestResponse;
 import com.web.study.party.entities.Users;
 import com.web.study.party.entities.enums.group.JoinPolicy;
 import com.web.study.party.entities.enums.group.MemberRole;
+import com.web.study.party.entities.enums.group.MemberState;
 import com.web.study.party.entities.enums.group.RequestStatus;
+import com.web.study.party.entities.group.GroupMembers;
 import com.web.study.party.entities.group.JoinGroupRequest;
 import com.web.study.party.entities.group.StudyGroups;
 import com.web.study.party.exception.BadRequestException;
@@ -69,9 +71,13 @@ public class JoinRequestServiceImp implements JoinRequestService {
         }
 
         // B3: Kiểm tra xem user đã là thành viên chưa.
-        boolean isAlreadyMember = groupMemberRepo.existsByGroupIdAndUserId(group.getId(), userId);
-        if (isAlreadyMember) {
-            throw new BadRequestException("Bạn đã là thành viên của nhóm này.");
+        var memberOpt = groupMemberRepo.findByGroupIdAndUserId(group.getId(), userId);
+
+        if (memberOpt.isPresent()) {
+            var member = memberOpt.get();
+            if (member.getRole() != MemberRole.GUEST && member.getState() != MemberState.LEFT) {
+                throw new BadRequestException("Bạn đã là thành viên của nhóm này.");
+            }
         }
 
         // B4: Kiểm tra xem user đã gửi yêu cầu trước đó (đang PENDING) chưa.
@@ -129,9 +135,9 @@ public class JoinRequestServiceImp implements JoinRequestService {
 
         // Kiểm tra xem người dùng có phải là OWNER hoặc MOD không
         boolean hasPermission = group.getOwner().getId().equals(ownerId) ||
-                groupMemberRepo.findByGroupAndUserId(group, ownerId)
-                        .map(member -> member.getRole() == MemberRole.MOD) // Sửa ADMIN thành MOD
-                        .orElse(false);
+                                groupMemberRepo.findByGroupAndUserId(group, ownerId)
+                                        .map(member -> member.getRole() == MemberRole.MOD) // Sửa ADMIN thành MOD
+                                        .orElse(false);
 
         if (!hasPermission) {
             throw new AccessDeniedException("Bạn không có quyền xem danh sách yêu cầu của nhóm này.");
@@ -194,7 +200,15 @@ public class JoinRequestServiceImp implements JoinRequestService {
         request.setResolvedAt(Instant.now());
 
         // B4: Gọi GroupMemberService để thêm thành viên
-        groupMemberService.addMember(request.getGroup().getId(), request.getUser().getId());
+//        groupMemberService.addMember(request.getGroup().getId(), request.getUser().getId());
+
+        GroupMembers gm = groupMemberRepo.findByGroupIdAndUserId(request.getGroup().getId(), request.getUser().getId())
+                .orElseThrow(() -> new BadRequestException("Thành viên chưa vào nhóm"));
+
+        gm.setRole(MemberRole.MEMBER);
+        gm.setState(MemberState.APPROVED);
+
+        groupMemberRepo.save(gm);
 
         joinRequestRepo.save(request);
 
@@ -252,9 +266,9 @@ public class JoinRequestServiceImp implements JoinRequestService {
 
         // 3. Kiểm tra quyền của người duyệt
         boolean hasPermission = request.getGroup().getOwner().getId().equals(adminId) ||
-                groupMemberRepo.findByGroupAndUserId(request.getGroup(), adminId)
-                        .map(member -> member.getRole() == MemberRole.MOD)
-                        .orElse(false);
+                                groupMemberRepo.findByGroupAndUserId(request.getGroup(), adminId)
+                                        .map(member -> member.getRole() == MemberRole.MOD)
+                                        .orElse(false);
 
         if (!hasPermission) {
             throw new AccessDeniedException("Bạn không có quyền thực hiện hành động này với yêu cầu tham gia.");

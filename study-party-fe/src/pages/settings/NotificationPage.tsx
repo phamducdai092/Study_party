@@ -2,14 +2,14 @@ import {useState} from "react";
 import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {useNavigate} from "react-router-dom";
 import {toast} from "sonner";
-import {Loader2, MailOpen, UserPlus, Check, X} from "lucide-react";
+import {Loader2, MailOpen, UserPlus, Check, X, Ban, Clock} from "lucide-react";
 
 // Components
 import {JoinRequestCard} from "@/components/features/group/JoinRequestCard.tsx";
 import {AppPagination} from "@/components/common/AppPagination.tsx";
 import {Button} from "@/components/ui/button";
 import {Badge} from "@/components/ui/badge";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"; // 👈 Import Tabs Shadcn
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
 
 // Hooks & Services
 import {useJoinRequests} from "@/hooks/useJoinRequests";
@@ -20,6 +20,7 @@ import type {EnumItem} from "@/types/enum.type.ts";
 import type {InvitationResponse} from "@/types/group/invitation.type.ts";
 import type {JoinRequestForUser} from "@/types/group/join_request.type.ts";
 import {fmtDateTime} from "@/utils/date.ts";
+import { RequestStatusEnum} from "@/types/enum/request.status.type.ts";
 
 export default function NotificationsPage() {
     const navigate = useNavigate();
@@ -48,7 +49,7 @@ export default function NotificationsPage() {
     } = useInvitations({
         page: pageInvites,
         size: 5,
-        status: 'PENDING'
+        status: ''
     });
 
     // ================== 2. MUTATIONS ==================
@@ -211,12 +212,72 @@ interface InvitationCardProps {
 }
 
 function InvitationCard({invite, onAccept, onDecline, isProcessing}: InvitationCardProps) {
+    // Helper function để render UI bên phải dựa theo status
+    const renderActionOrStatus = () => {
+        switch (invite.status) {
+            case RequestStatusEnum.PENDING:
+                return (
+                    <div className="flex items-center gap-2 w-full md:w-auto">
+                        <Button
+                            variant="outline"
+                            className="flex-1 md:flex-none gap-1 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                            onClick={() => onDecline(invite.token)}
+                            disabled={isProcessing}
+                        >
+                            <X className="w-4 h-4" /> Từ chối
+                        </Button>
+                        <Button
+                            className="flex-1 md:flex-none gap-1 bg-green-600 hover:bg-green-700 text-white"
+                            onClick={() => onAccept(invite.token)}
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                            Chấp nhận
+                        </Button>
+                    </div>
+                );
+
+            case RequestStatusEnum.ACCEPTED:
+                return (
+                    <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200 px-3 py-1 gap-1">
+                        <Check className="w-3 h-3" /> Đã chấp nhận
+                    </Badge>
+                );
+
+            case RequestStatusEnum.DECLINED:
+                return (
+                    <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200 px-3 py-1 gap-1">
+                        <X className="w-3 h-3" /> Đã từ chối
+                    </Badge>
+                );
+
+            case RequestStatusEnum.CANCELED:
+                return (
+                    <Badge variant="outline" className="bg-gray-100 text-gray-600 border-gray-200 px-3 py-1 gap-1">
+                        <Ban className="w-3 h-3" /> Đã hủy
+                    </Badge>
+                );
+
+            case RequestStatusEnum.EXPIRED:
+                return (
+                    <Badge variant="outline" className="bg-amber-50 text-amber-700 border-amber-200 px-3 py-1 gap-1">
+                        <Clock className="w-3 h-3" /> Hết hạn
+                    </Badge>
+                );
+
+            default:
+                return null;
+        }
+    };
+
     return (
-        <div
-            className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-all gap-4">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between p-4 bg-white border rounded-lg shadow-sm hover:shadow-md transition-all gap-4">
+            {/* Left Side: Info */}
             <div className="flex items-center gap-4">
-                <div className="p-3 bg-blue-100 text-blue-600 rounded-full">
-                    <MailOpen className="w-6 h-6"/>
+                <div className={`p-3 rounded-full ${
+                    invite.status === RequestStatusEnum.PENDING ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-500'
+                }`}>
+                    <MailOpen className="w-6 h-6" />
                 </div>
                 <div>
                     <h3 className="font-semibold text-lg text-gray-900">
@@ -230,24 +291,8 @@ function InvitationCard({invite, onAccept, onDecline, isProcessing}: InvitationC
                 </div>
             </div>
 
-            <div className="flex items-center gap-2 w-full md:w-auto">
-                <Button
-                    variant="outline"
-                    className="flex-1 md:flex-none gap-1 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-                    onClick={() => onDecline(invite.token)}
-                    disabled={isProcessing}
-                >
-                    <X className="w-4 h-4"/> Từ chối
-                </Button>
-                <Button
-                    className="flex-1 md:flex-none gap-1 bg-green-600 hover:bg-green-700 text-white"
-                    onClick={() => onAccept(invite.token)}
-                    disabled={isProcessing}
-                >
-                    {isProcessing ? <Loader2 className="w-4 h-4 animate-spin"/> : <Check className="w-4 h-4"/>}
-                    Chấp nhận
-                </Button>
-            </div>
+            {/* Right Side: Actions or Status Badge */}
+            {renderActionOrStatus()}
         </div>
-    )
+    );
 }

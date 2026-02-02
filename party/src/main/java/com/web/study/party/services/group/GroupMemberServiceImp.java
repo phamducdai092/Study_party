@@ -74,6 +74,7 @@ public class GroupMemberServiceImp implements GroupMemberService {
         if (m.getRole() == MemberRole.OWNER) throw new BusinessException("Owner must transfer ownership first");
 
         m.setState(MemberState.LEFT);
+        m.setRole(MemberRole.GUEST);
         groupMemberRepo.save(m);
     }
 

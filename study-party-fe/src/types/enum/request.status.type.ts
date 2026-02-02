@@ -1,4 +1,4 @@
-export const RequestStatus = {
+export const RequestStatusEnum = {
     PENDING: 'PENDING',
     ACCEPTED: 'ACCEPTED',
     DECLINED: 'DECLINED',

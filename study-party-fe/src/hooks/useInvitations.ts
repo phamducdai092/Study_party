@@ -19,7 +19,7 @@ export function useInvitations(options: UseInvitationsOptions = {}) {
     const {
         page = 0,
         size = 10,
-        status = 'PENDING',
+        status = '',
         sort = 'createdAt',
         enabled = true
     } = options;
