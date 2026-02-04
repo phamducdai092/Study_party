@@ -8,9 +8,11 @@ import com.web.study.party.entities.enums.CodeStatus;
 import com.web.study.party.entities.enums.group.MemberRole;
 import com.web.study.party.services.group.GroupMemberServiceImp;
 import com.web.study.party.utils.Paging;
-import com.web.study.party.utils.filters.GroupMemberFilter;
+import com.web.study.party.utils.ResponseUtil;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Member;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/groups/members")
@@ -34,17 +37,23 @@ public class GroupMemberController {
             @RequestParam(defaultValue = "12") int size,
             @RequestParam(required = false) String sort,
             @RequestParam(required = false) MemberRole role,
-            HttpServletRequest httpRequest) {
-
-        if (sort == null || sort.isEmpty()) {
-            sort = "joinedAt";
-        }
-
+            @RequestParam(required = false) String keyword,
+            HttpServletRequest httpRequest
+    ) {
+        // 1. Prepare Pageable
         Pageable pageable = Paging.parsePageable(page, size, sort);
 
-        var membersPage = memberService.getMembers(gid, user, pageable);
+        // 2. Call Service (Trả về Page<MemberResponse>)
+        Page<MemberResponse> membersPage = memberService.getMembers(gid, user, pageable);
 
-        return GroupMemberFilter.filterMemberResponse(role, httpRequest, membersPage);
+        // 3. Build Filter Map (Gọn, đẹp, dễ đọc)
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("role", role)
+                .add("keyword", keyword)
+                .build();
+
+        // 4. Return luôn bằng Util mới -> DONE
+        return ResponseUtil.success(membersPage, filters, "Fetched group members successfully", httpRequest);
     }
 
     @DeleteMapping("/{gid}/leave")

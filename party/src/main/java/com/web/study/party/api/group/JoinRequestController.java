@@ -8,15 +8,18 @@ import com.web.study.party.entities.enums.CodeStatus;
 import com.web.study.party.entities.enums.group.RequestStatus;
 import com.web.study.party.services.group.JoinRequestService;
 import com.web.study.party.utils.Paging;
-import com.web.study.party.utils.filters.GroupFilter;
+import com.web.study.party.utils.ResponseUtil;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/request")
@@ -88,9 +91,14 @@ public class JoinRequestController {
         }
 
         Pageable pageable = Paging.parsePageable(page, size, sort);
-        var result = joinRequestService.getJoinRequestsForGroup(slug, user.getId(), pageable);
 
-        return GroupFilter.filterJoinRequestResponsePageable(status, req, result);
+        Page<JoinRequestResponse> result = joinRequestService.getJoinRequestsForGroup(slug, user.getId(), pageable);
+
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("status", status)
+                .build();
+
+        return ResponseUtil.success(result, filters, "Lấy danh sách yêu cầu tham gia phòng học thành công", req);
     }
 
     @GetMapping("/user")
@@ -108,8 +116,12 @@ public class JoinRequestController {
 
         Pageable pageable = Paging.parsePageable(page, size, sort);
 
-        var result = joinRequestService.getJoinRequestsForUser(user.getId(), pageable);
+        Page<UserJoinRequestResponse> result = joinRequestService.getJoinRequestsForUser(user.getId(), pageable);
 
-        return GroupFilter.filterUserJoinRequestResponsePageable(status, req, result);
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("status", status)
+                .build();
+
+        return ResponseUtil.success(result, filters, "Lấy danh sách yêu cầu tham gia phòng học của mình thành công", req);
     }
 }

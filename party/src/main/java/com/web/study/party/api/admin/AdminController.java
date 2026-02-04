@@ -7,14 +7,17 @@ import com.web.study.party.dto.response.admin.AdminGroupResponse;
 import com.web.study.party.dto.response.admin.AdminUserResponse;
 import com.web.study.party.services.admin.AdminServiceImp;
 import com.web.study.party.utils.Paging;
-import com.web.study.party.utils.filters.AdminFilter;
+import com.web.study.party.utils.ResponseUtil;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -38,14 +41,19 @@ public class AdminController {
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "desc") String order,
             HttpServletRequest req
     ) {
-        Pageable pageable = Paging.parsePageable(page, size, sortBy);
-        var result = adminService.getAllUsers(keyword, pageable);
+        Pageable pageable = Paging.parsePageable(page, size, sort);
+        
+        Page<AdminUserResponse> result = adminService.getAllUsers(keyword, pageable);
 
-        return AdminFilter.filterUserResponses(req, result, order);
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("order", order)
+                .build();
+
+        return ResponseUtil.success(result, filters, "Lấy danh sách người dùng thành công", req);
     }
 
     @GetMapping("/groups")
@@ -53,13 +61,19 @@ public class AdminController {
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "desc") String order,
             HttpServletRequest req
     ) {
-        Pageable pageable = Paging.parsePageable(page, size, sortBy);
-        var result = adminService.getAllGroups(keyword, pageable);
-        return AdminFilter.filterGroupResponses(req, result, order);
+        Pageable pageable = Paging.parsePageable(page, size, sort);
+        
+        Page<AdminGroupResponse> result = adminService.getAllGroups(keyword, pageable);
+
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("order", order)
+                .build();
+        
+        return ResponseUtil.success(result, filters, "Lấy danh sách phòng học thành công", req);
     }
 
     @GetMapping("/files")
@@ -67,13 +81,19 @@ public class AdminController {
             @RequestParam(defaultValue = "") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "id") String sort,
             @RequestParam(defaultValue = "desc") String order,
             HttpServletRequest req
     ) {
-        Pageable pageable = Paging.parsePageable(page, size, sortBy);
-        var result = adminService.getAllFiles(keyword, pageable);
-        return AdminFilter.filterFileResponses(req, result, order);
+        Pageable pageable = Paging.parsePageable(page, size, sort);
+
+        Page<AdminFileResponse> result = adminService.getAllFiles(keyword, pageable);
+
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("order", order)
+                .build();
+
+        return ResponseUtil.success(result, filters, "Lấy danh sách file phương tiện thành công", req);
     }
 
     @PutMapping("/users/{userId}/status")

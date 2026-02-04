@@ -1,8 +1,6 @@
 package com.web.study.party.api.user;
 
 import com.web.study.party.dto.mapper.user.UserMapper;
-import com.web.study.party.dto.pagination.PageMeta;
-import com.web.study.party.dto.pagination.PageResponse;
 import com.web.study.party.dto.request.user.UserInformationUpdateRequest;
 import com.web.study.party.dto.response.ApiResponse;
 import com.web.study.party.dto.response.auth.AuthResponse;
@@ -15,7 +13,7 @@ import com.web.study.party.services.attachment.AttachmentService;
 import com.web.study.party.services.user.UserServiceImp;
 import com.web.study.party.utils.Paging;
 import com.web.study.party.utils.ResponseUtil;
-import com.web.study.party.utils.filters.UserFilter;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +24,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/user")
@@ -46,7 +45,12 @@ public class UserController {
         Pageable pageable = Paging.parsePageable(page, size, sort);
         Page<UserSearchResponse> result = userService.searchUsers(keyword, pageable);
 
-        return UserFilter.filterUsers(req, result);
+        Map<String, Object> filters = FilterBuilder.create()
+                .build();
+
+        // Dùng Filter để đóng gói response
+        return ResponseUtil.success(result, filters, "Fetched tasks successfully", req);
+
     }
 
     @GetMapping("/{userId}")
@@ -116,8 +120,11 @@ public class UserController {
         Pageable pageable = Paging.parsePageable(page, size, sort);
 
         // Gọi Service
-        PageResponse<AttachmentDetailResponse> result = attachmentService.getMyAttachments(user.getId(), pageable);
+        Page<AttachmentDetailResponse> result = attachmentService.getMyAttachments(user.getId(), pageable);
 
-        return ResponseUtil.page(result.getData(), result.getMeta(), "Lấy danh sách file cá nhân thành công", req);
+        Map<String, Object> filters = FilterBuilder.create()
+                .build();
+
+        return ResponseUtil.success(result, filters, "Lấy danh sách file cá nhân thành công", req);
     }
 }

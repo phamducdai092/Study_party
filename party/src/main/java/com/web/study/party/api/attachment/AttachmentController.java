@@ -1,13 +1,12 @@
 package com.web.study.party.api.attachment;
 
-import com.web.study.party.dto.pagination.PageMeta;
-import com.web.study.party.dto.pagination.PageResponse;
 import com.web.study.party.dto.response.ApiResponse;
 import com.web.study.party.dto.response.group.task.AttachmentDetailResponse;
 import com.web.study.party.entities.Users;
 import com.web.study.party.services.attachment.AttachmentService;
 import com.web.study.party.utils.Paging;
 import com.web.study.party.utils.ResponseUtil;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +16,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/attachments")
@@ -37,9 +37,13 @@ public class AttachmentController {
         Pageable pageable = Paging.parsePageable(page, size, sort);
 
         // 1. Gọi Service (Nhận về cục đã đóng gói sẵn)
-        PageResponse<AttachmentDetailResponse> result = attachmentService.getAttachmentsByGroup(groupId, user.getId(), pageable);
+        Page<AttachmentDetailResponse> pageResult = attachmentService.getAttachmentsByGroup(groupId, user.getId(), pageable);
 
-        // 2. Trả về (Không cần build meta ở đây nữa)
-        return ResponseUtil.page(result.getData(), result.getMeta(), "Lấy danh sách tài liệu thành công", req);
+        // 2. Build Filter Map (Logic hiển thị)
+        Map<String, Object> filters = FilterBuilder.create()
+                .build();
+
+        // 3. ResponseUtil tự động bóc tách PageMeta từ pageResult
+        return ResponseUtil.success(pageResult, filters, "Lấy danh sách tài liệu thành công", req);
     }
 }

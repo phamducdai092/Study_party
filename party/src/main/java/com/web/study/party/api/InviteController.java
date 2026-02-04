@@ -7,7 +7,8 @@ import com.web.study.party.entities.enums.CodeStatus;
 import com.web.study.party.entities.enums.group.RequestStatus;
 import com.web.study.party.services.group.InvitationService;
 import com.web.study.party.utils.Paging;
-import com.web.study.party.utils.filters.InvitationFilter;
+import com.web.study.party.utils.ResponseUtil;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +18,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/invites")
@@ -33,14 +35,19 @@ public class InviteController {
             @RequestParam(defaultValue = "createdAt") String sort,
             @RequestParam(required = false) RequestStatus status,
             @RequestParam(required = false) String keyword,
-            HttpServletRequest req
+            HttpServletRequest httpRequest
     ) {
         Pageable pageable = Paging.parsePageable(page, size, sort);
 
         // Gọi Service lấy Page
         Page<InvitationResponse> invitationPage = invitationService.getPendingInvitationsForUser(invitee, status, keyword, pageable);
 
-        return InvitationFilter.filterInvitationResponsePageable(status, keyword, req, invitationPage);
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("status", status)
+                .add("keyword", keyword)
+                .build();
+
+        return ResponseUtil.success(invitationPage, filters, "Fetched group members successfully", httpRequest);
     }
 
     // API này cho user đã đăng nhập chấp nhận lời mời

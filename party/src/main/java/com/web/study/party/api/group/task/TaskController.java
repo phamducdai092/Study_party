@@ -9,7 +9,8 @@ import com.web.study.party.entities.enums.task.TaskStatus;
 import com.web.study.party.services.task.TaskService;
 import com.web.study.party.utils.PermissionChecker;
 import com.web.study.party.utils.Paging;
-import com.web.study.party.utils.filters.TaskFilter;
+import com.web.study.party.utils.ResponseUtil;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/groups/{groupId}/tasks")
@@ -121,10 +123,15 @@ public class TaskController {
         permissionChecker.requireMember(user.getId(), groupId);
 
         Pageable pageable = Paging.parsePageable(page, size, sort);
+
         Page<TaskSummaryResponse> taskPage = taskService.listTasks(groupId, status, pageable);
 
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("status", status)
+                .build();
+
         // Dùng Filter để đóng gói response
-        return TaskFilter.filterTaskResponsePageable(status, req, taskPage);
+        return ResponseUtil.success(taskPage, filters, "Fetched tasks successfully", req);
     }
 
     // 5. Submit Task
@@ -194,7 +201,10 @@ public class TaskController {
         Page<SubmissionResponse> statuses = taskService.getSubmissionStatuses(
                 taskId, groupId, user.getId(), pageable);
 
-        return TaskFilter.filterSubmissionResponsePageable(req, statuses);
+        Map<String, Object> filters = FilterBuilder.create()
+                .build();
+
+        return ResponseUtil.success(statuses, filters, "Fetched submission statuses successfully", req);
     }
 
     // 8. Delete Task

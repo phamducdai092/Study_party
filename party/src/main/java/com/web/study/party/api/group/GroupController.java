@@ -9,10 +9,12 @@ import com.web.study.party.entities.Users;
 import com.web.study.party.entities.enums.CodeStatus;
 import com.web.study.party.services.group.GroupServiceImp;
 import com.web.study.party.utils.Paging;
-import com.web.study.party.utils.filters.GroupFilter;
+import com.web.study.party.utils.ResponseUtil;
+import com.web.study.party.utils.filters.FilterBuilder;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -55,10 +57,15 @@ public class GroupController {
         Pageable pageable = Paging.parsePageable(page, size, sort);
 
         // Gọi service
-        var result = groupService.getDiscoverGroups(user.getId(), pageable);
+        Page<GroupCardResponse> result = groupService.getDiscoverGroups(user.getId(), pageable);
+
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("topic", topic)
+                .add("keyword", keyword)
+                .build();
 
         // Dùng lại Filter có sẵn để đóng gói response
-        return GroupFilter.filterGroupCardResponsePageable(topic, keyword, req, result);
+        return ResponseUtil.success(result, filters, "Lấy danh sách khám phá phòng học thành công", req);
     }
 
     @GetMapping("/joined")
@@ -72,9 +79,15 @@ public class GroupController {
             HttpServletRequest req
     ) {
         Pageable pageable = Paging.parsePageable(page, size, sort);
-        var result = groupService.getJoinedGroups(user.getId(), pageable);
 
-        return GroupFilter.filterGroupCardResponsePageable(topic, keyword, req, result);
+        Page<GroupCardResponse> result = groupService.getJoinedGroups(user.getId(), pageable);
+
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("topic", topic)
+                .add("keyword", keyword)
+                .build();
+
+        return ResponseUtil.success(result, filters, "Lấy danh sách phòng học đã tham gia thành công", req);
     }
 
     @GetMapping("/owned")
@@ -89,9 +102,14 @@ public class GroupController {
     ) {
         Pageable pageable = Paging.parsePageable(page, size, sort);
 
-        var result = groupService.getOwnedGroups(user.getId(), pageable);
+        Page<GroupCardResponse> result = groupService.getOwnedGroups(user.getId(), pageable);
 
-        return GroupFilter.filterGroupCardResponsePageable(topic, keyword, req, result);
+        Map<String, Object> filters = FilterBuilder.create()
+                .add("topic", topic)
+                .add("keyword", keyword)
+                .build();
+
+        return ResponseUtil.success(result, filters, "Lấy danh sách phòng học đã tạo thành công", req);
     }
 
     @GetMapping("/{slug}")
