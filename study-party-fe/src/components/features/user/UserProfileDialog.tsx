@@ -30,8 +30,8 @@ import {useMemo, useState} from "react";
 import {toast} from "sonner";
 import useAuthStore from "@/store/auth.store.ts";
 import {uploadToCloudinary} from "@/lib/cloudinary";
-import {updateUserProfile} from "@/services/user.service.ts";
-import {loadMe} from "@/services/auth.service.ts";
+import {userService} from "@/services/user.service.ts";
+import {authService} from "@/services/auth.service.ts";
 import Field from "@/components/shared/Field";
 import InfoPill from "@/components/shared/InfoPill";
 import AvatarDisplay from "@/components/shared/AvatarDisplay";
@@ -97,8 +97,8 @@ export function UserInfoDialog({
             };
             const body = Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined));
 
-            await updateUserProfile(body);
-            const res = await loadMe();
+            await userService.updateUserProfile(body);
+            const res = await authService.loadMe();
             const data: User = res?.data?.user ?? res?.data;
             setUser?.(data);
 

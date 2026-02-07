@@ -25,7 +25,7 @@ import {Slider} from "@/components/ui/slider";
 
 import type {EnumItem} from "@/types/enum.type";
 import {createRoomSchema, type CreateRoomFormValues} from "@/types/schema/group.schema";
-import {createRoom, updateRoom} from "@/services/group.service";
+import {groupService} from "@/services/group.service";
 import {reBootstrapGroups} from "@/bootstrap/bootstrap";
 import OptionCard from "@/components/features/group/OptionCard";
 
@@ -113,11 +113,11 @@ export default function UpsertRoomDialog({
         const payload = createRoomSchema.parse(data);
         try {
             if (mode === "create") {
-                await createRoom(payload);
+                await groupService.createRoom(payload);
                 toast.success(`Đã tạo "${payload.name}" thành công 🎉`);
             } else {
                 if (!slug) throw new Error("Thiếu slug để chỉnh sửa");
-                await updateRoom(slug, payload);
+                await groupService.updateRoom(slug, payload);
                 toast.success(`Đã cập nhật "${payload.name}" ✅`);
             }
             await reBootstrapGroups();

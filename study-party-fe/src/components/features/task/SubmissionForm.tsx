@@ -4,7 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { UploadCloud, FileIcon, X } from "lucide-react";
 import { toast } from "sonner";
-import {submitTask} from "@/services/task.service.ts";
+import {taskService} from "@/services/task.service.ts";
 
 
 interface SubmissionFormProps {
@@ -36,7 +36,7 @@ export default function SubmissionForm({ groupId, taskId, onSuccess }: Submissio
 
         setIsSubmitting(true);
         try {
-            await submitTask(
+            await taskService.submitTask(
                 groupId,
                 taskId,
                 { submissionText: text },

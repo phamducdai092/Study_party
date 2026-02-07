@@ -2,7 +2,7 @@ import {useEffect, useState, useMemo} from "react";
 import {Client} from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import {toast} from "sonner";
-import {getRoomDetailBySlug} from "@/services/group.service";
+import {groupService} from "@/services/group.service";
 import {SOCKET_EVENTS, SOCKET_TOPICS, type SocketMessage} from "@/config/socket.config";
 import type {RoomDetail} from "@/types/group/group.type";
 import {MemberRoleEnum} from "@/types/enum/group.enum";
@@ -22,7 +22,7 @@ export function useRoomRealtime(slug?: string) {
         const fetchRoomDetails = async () => {
             try {
                 setIsLoading(true);
-                const response = await getRoomDetailBySlug(slug);
+                const response = await groupService.getRoomDetailBySlug(slug);
                 setRoomData(response);
                 setError(null);
             } catch (err: any) {
@@ -96,7 +96,7 @@ export function useRoomRealtime(slug?: string) {
 
     const reloadRoomData = async () => {
         if (slug) {
-            const res = await getRoomDetailBySlug(slug);
+            const res = await groupService.getRoomDetailBySlug(slug);
             setRoomData(res);
         }
     }

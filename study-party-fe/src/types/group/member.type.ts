@@ -9,6 +9,8 @@ export type MemberResponsePageParams = {
 }
 
 export type MemberResponse = {
+    id: number;
     member: UserBrief;
+    joinedAt: string;
     role: MemberRole;
 }

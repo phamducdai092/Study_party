@@ -6,6 +6,7 @@ import com.web.study.party.entities.enums.group.MemberRole;
 import java.time.Instant;
 
 public record MemberResponse(
+        Integer id,
         UserBrief member,
         Instant joinedAt,
         MemberRole role

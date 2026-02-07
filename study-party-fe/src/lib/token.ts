@@ -1,4 +1,4 @@
-import {refreshToken} from "@/services/auth.service.ts";
+import {authService} from "@/services/auth.service.ts";
 import type {Tokens} from "@/types/token.type.ts";
 import { sendMessage, listenMessage } from "./broadcast";
 
@@ -39,7 +39,7 @@ export function scheduleProactiveRefresh(access?: string | null) {
     if (waitMs > 0) {
         refreshTimer = setTimeout(async () => {
             try {
-                await refreshToken(); // interceptor sẽ tự set access mới
+                await authService.refreshToken(); // interceptor sẽ tự set access mới
             } catch {
                 clearTokens();
             }

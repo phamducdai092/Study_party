@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { type IMessage } from "@/types/chat/message.type.ts";
 import type { SendMessageRequest } from "@/types/chat/chat.request.ts";
-import { sendGroupMessage } from "@/services/chat.service.ts";
+import { chatService } from "@/services/chat.service.ts";
 import { SOCKET_EVENTS, SOCKET_TOPICS, type SocketMessage } from "@/config/socket.config.ts";
 import {useGlobalSocket} from "@/context/GlobalSocketContext.tsx";
 
@@ -13,7 +13,7 @@ export function useRoomChatMessage(roomId: number) {
 
     const sendMessage = useCallback(async (roomId: number, messageRequest: SendMessageRequest, files?: File[]) => {
         try {
-            await sendGroupMessage(roomId, messageRequest, files);
+            await chatService.sendGroupMessage(roomId, messageRequest, files);
         } catch (err: any) {
             console.error(err);
             const errMsg = err?.response?.data?.message || "Không thể gửi tin nhắn.";

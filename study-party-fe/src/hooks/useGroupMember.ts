@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getGroupMembers } from "@/services/group.member.service";
+import {groupMemberService} from "@/services/group.member.service";
 
 // 1. Định nghĩa Key Factory (để quản lý key cho đồng bộ, tránh gõ sai string)
 export const groupKeys = {
@@ -22,7 +22,7 @@ export function useGroupMembers(groupId: number, options: UseGroupMembersOptions
         queryKey: groupKeys.list(groupId, page, size),
 
         queryFn: async () => {
-            const res = await getGroupMembers(groupId, { page, size });
+            const res = await groupMemberService.getGroupMembers(groupId, { page, size });
             return {
                 items: res.data || [],
                 meta: res.meta

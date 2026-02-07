@@ -3,28 +3,30 @@ import type { AuthResponse, LoginPayload, RegisterPayload } from "@/types/auth.t
 import { clearTokens } from "@/lib/token.ts";
 import type {TokenPair} from "@/types/token.type.ts";
 
-export const login = (payload: LoginPayload) => {
-	return http.post<AuthResponse>("auth/login", payload, { withCredentials: true });
-};
+export const authService = {
+	login: (payload: LoginPayload) => {
+		return http.post<AuthResponse>("auth/login", payload, { withCredentials: true });
+	},
 
-export const register = (payload: RegisterPayload) => {
-	return http.post<void>("auth/register", payload,  { withCredentials: true });
-};
+	register: (payload: RegisterPayload) => {
+		return http.post<void>("auth/register", payload,  { withCredentials: true });
+	},
 
-export const logout = async () => {
-	try {
-		await http.post("/auth/logout");
-	} catch (error) {
-		console.error("Lỗi logout API:", error);
-	} finally {
-		clearTokens();
-	}
-};
+	logout: async () => {
+		try {
+			await http.post("/auth/logout");
+		} catch (error) {
+			console.error("Lỗi logout API:", error);
+		} finally {
+			clearTokens();
+		}
+	},
 
-export const loadMe = () => {
-	return http.get("user/me");
-};
+	loadMe: () => {
+		return http.get("user/me");
+	},
 
-export const refreshToken = () => {
-    return http.post<TokenPair>("auth/refresh", {}, { withCredentials: true });
+	refreshToken: () => {
+		return http.post<TokenPair>("auth/refresh", {}, { withCredentials: true });
+	},
 }

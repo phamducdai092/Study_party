@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { TaskStatus } from "@/types/enum/task.enum";
 import { toast } from "sonner";
-import {reviewSubmission} from "@/services/task.service";
+import {taskService} from "@/services/task.service";
 
 interface ReviewFormProps {
     groupId: number;
@@ -38,7 +38,7 @@ export default function ReviewForm({
 
         setIsLoading(true);
         try {
-            await reviewSubmission(groupId, taskId, submissionId, {
+            await taskService.reviewSubmission(groupId, taskId, submissionId, {
                 status,
                 grade,
                 reviewNotes: notes

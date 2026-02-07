@@ -5,7 +5,7 @@ import { MessageTypeEnum } from "@/types/chat/message.type";
 import useAuthStore from "@/store/auth.store";
 import { GroupChatCard } from "@/components/features/group/chat/GroupChatCard";
 import { useInfiniteQuery, useQueryClient, type InfiniteData } from "@tanstack/react-query";
-import { getGroupMessages } from "@/services/chat.service";
+import { chatService } from "@/services/chat.service";
 import { Loader2, ArrowDown } from "lucide-react";
 import { ChatInput } from "@/components/features/group/chat/ChatInput";
 import { useInView } from "react-intersection-observer";
@@ -40,7 +40,7 @@ export function GroupChatList({ groupId }: { groupId: number }) {
     } = useInfiniteQuery({
         queryKey: ["group-message", groupId],
         queryFn: async ({ pageParam = 0 }) => {
-            const res = await getGroupMessages(groupId, pageParam, 20);
+            const res = await chatService.getGroupMessages(groupId, pageParam, 20);
             return res.data || [];
         },
         initialPageParam: 0,

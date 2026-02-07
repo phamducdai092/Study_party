@@ -16,7 +16,7 @@ import TaskEditForm, {type EditFormValues} from "@/components/features/task/deta
 import TaskSubmissionList from "@/components/features/task/detail/submission/TaskSubmissionList.tsx";
 
 // Services
-import { getTaskDetail, updateTask, deleteTask } from "@/services/task.service";
+import {taskService} from "@/services/task.service";
 
 interface TaskDetailSheetProps {
     groupId: number;
@@ -34,7 +34,7 @@ export default function TaskDetailSheet({ groupId, taskId, isOpen, onClose, isMo
     // 1. Fetch Data
     const { data: task, isLoading, refetch } = useQuery({
         queryKey: ["task-detail", taskId],
-        queryFn: () => getTaskDetail(groupId, taskId!),
+        queryFn: () => taskService.getTaskDetail(groupId, taskId!),
         enabled: !!taskId && isOpen,
         staleTime: 0,
     });
@@ -42,7 +42,7 @@ export default function TaskDetailSheet({ groupId, taskId, isOpen, onClose, isMo
     // 2. Mutations
     const updateMutation = useMutation({
         mutationFn: async ({ values, files }: { values: EditFormValues; files: File[] }) => {
-            return updateTask(groupId, taskId!, {
+            return taskService.updateTask(groupId, taskId!, {
                 ...values,
                 deadline: new Date(values.deadline).toISOString(),
             }, files);
@@ -58,7 +58,7 @@ export default function TaskDetailSheet({ groupId, taskId, isOpen, onClose, isMo
     });
 
     const deleteMutation = useMutation({
-        mutationFn: () => deleteTask(groupId, taskId!),
+        mutationFn: () => taskService.deleteTask(groupId, taskId!),
         onSuccess: () => {
             toast.success("Bay màu bài tập thành công! 🗑️");
             onClose();

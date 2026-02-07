@@ -11,7 +11,7 @@ import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import AvatarDisplay from "@/components/shared/AvatarDisplay.tsx";
 import { cn } from "@/lib/utils.ts";
-import { getUserProfile } from "@/services/user.service.ts";
+import {userService} from "@/services/user.service.ts";
 import { format } from "date-fns";
 import { vi } from "date-fns/locale";
 import { toast } from "sonner"; // Thêm toast
@@ -31,7 +31,7 @@ export default function PublicProfilePage() {
     // 1. Fetch User Data
     const { data: user, isLoading, isError } = useQuery({
         queryKey: ['public-profile', userId],
-        queryFn: () => getUserProfile(Number(userId)),
+        queryFn: () => userService.getUserProfile(Number(userId)),
         enabled: !!userId,
         retry: 1
     });

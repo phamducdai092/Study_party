@@ -1,14 +1,13 @@
 import {useQueryClient} from "@tanstack/react-query";
 import {
-    kickGroupMember,
-    setMemberRole,
+    groupMemberService,
 } from "@/services/group.member.service.ts";
 import {Loader2, Search} from "lucide-react";
 import {toast} from "sonner";
 import {useState} from "react";
 import type {MemberResponse} from "@/types/group/member.type.ts";
 import {AppPagination} from "@/components/common/AppPagination";
-import type {PagingResponse} from "@/types/paging.type.ts";
+import type {PageMeta} from "@/types/paging.type.ts";
 import {GroupMemberCard} from "@/components/features/group/GroupMemberCard.tsx";
 import {type MemberRole} from "@/types/enum/group.enum.ts";
 import {groupKeys, useGroupMembers} from "@/hooks/useGroupMember.ts";
@@ -18,7 +17,7 @@ import {Input} from "@/components/ui/input.tsx";
 // Định nghĩa kiểu dữ liệu trả về của Query để code gợi ý cho sướng
 type GroupMemberQueryResult = {
     items: MemberResponse[];
-    meta: PagingResponse; // Hoặc PagingResponse
+    meta: PageMeta; // Hoặc PageMeta
 }
 
 export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: boolean }) {
@@ -45,7 +44,7 @@ export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: 
     const handleKickMember = async (memberId: number) => {
         try {
             setProcessingId(memberId);
-            await kickGroupMember(groupId, memberId);
+            await groupMemberService.kickGroupMember(groupId, memberId);
             toast.success("Đã loại thành viên khỏi nhóm");
 
             queryClient.setQueryData(currentQueryKey, (old: any) => {
@@ -63,7 +62,7 @@ export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: 
     }
 
     const handleChangeMemberRole = async (memberId: number, newMemberRole: MemberRole) => {
-        await queryClient.cancelQueries({ queryKey: currentQueryKey });
+        await queryClient.cancelQueries({queryKey: currentQueryKey});
         const previousData = queryClient.getQueryData(currentQueryKey);
         queryClient.setQueryData(currentQueryKey, (old: GroupMemberQueryResult | undefined) => {
             if (!old) return old;
@@ -71,7 +70,7 @@ export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: 
                 ...old,
                 items: old.items.map(m => {
                     if (m.member.id === memberId) {
-                        return { ...m, role: newMemberRole };
+                        return {...m, role: newMemberRole};
                     }
                     return m;
                 })
@@ -79,7 +78,7 @@ export function GroupMemberList({groupId, canEdit}: { groupId: number, canEdit: 
         });
 
         try {
-            await setMemberRole(groupId, memberId, newMemberRole);
+            await groupMemberService.setMemberRole(groupId, memberId, newMemberRole);
             toast.success("Đã thay đổi vai trò.");
         } catch (error: any) {
             queryClient.setQueryData(currentQueryKey, previousData);

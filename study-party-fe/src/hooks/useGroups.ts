@@ -1,5 +1,5 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import {getRoomsDiscover, getRoomsUserJoined, getRoomsUserOwned} from "@/services/group.service";
+import {keepPreviousData, useQuery} from "@tanstack/react-query";
+import {groupService} from "@/services/group.service";
 
 // 1. Định nghĩa Type
 export type GroupListType = 'joined' | 'owned' | 'discover';
@@ -19,7 +19,7 @@ type UseGroupsOptions = {
     enabled?: boolean;
 }
 
-export function useGroups({ type, page = 0, size = 12, enabled = true }: UseGroupsOptions) {
+export function useGroups({type, page = 0, size = 12, enabled = true}: UseGroupsOptions) {
 
     const queryKey = {
         joined: groupListKeys.joined(page, size),
@@ -28,9 +28,9 @@ export function useGroups({ type, page = 0, size = 12, enabled = true }: UseGrou
     }[type];
 
     const apiCall = {
-        joined: getRoomsUserJoined,
-        owned: getRoomsUserOwned,
-        discover: getRoomsDiscover,
+        joined: groupService.getRoomsUserJoined,
+        owned: groupService.getRoomsUserOwned,
+        discover: groupService.getRoomsDiscover,
     }[type];
 
     return useQuery({
@@ -39,7 +39,7 @@ export function useGroups({ type, page = 0, size = 12, enabled = true }: UseGrou
 
         queryFn: async () => {
             // Gọi API đã map ở trên
-            const res = await apiCall({ page, size, sort: 'createdAt' });
+            const res = await apiCall({page, size, sort: 'createdAt'});
 
             return {
                 items: res.data || [],

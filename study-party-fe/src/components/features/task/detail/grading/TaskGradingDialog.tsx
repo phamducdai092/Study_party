@@ -10,7 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-import { reviewSubmission } from "@/services/task.service";
+import {taskService} from "@/services/task.service";
 import { TaskStatus } from "@/types/enum/task.enum";
 import type { SubmissionResponse } from "@/types/task/task.type";
 import type { AttachmentResponse } from "@/types/attachment/attachment.type.ts";
@@ -31,7 +31,7 @@ export default function TaskGradingDialog({ groupId, taskId, submission, isOpen,
     // Mutation giữ ở cha để control flow sau khi submit xong (đóng dialog, invalidate query)
     const mutation = useMutation({
         mutationFn: (values: GradingFormValues) =>
-            reviewSubmission(groupId, taskId, submission!.id, values),
+            taskService.reviewSubmission(groupId, taskId, submission!.id, values),
         onSuccess: () => {
             toast.success("Đã chấm điểm thành công! 🌟");
             queryClient.invalidateQueries({ queryKey: ["task-submissions", taskId] });

@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getTasks } from "@/services/task.service";
+import {taskService} from "@/services/task.service";
 
 export interface groupTaskQueryParams {
     page?: number;
@@ -17,7 +17,7 @@ export const useGroupTasks = (groupId: number, params: groupTaskQueryParams) => 
     return useQuery({
         queryKey: groupTaskKeys.list(params),
         queryFn: async  () => {
-            const res = await getTasks(groupId, params);
+            const res = await taskService.getTasks(groupId, params);
             return {
                 items: res.data || [],
                 meta: res.meta

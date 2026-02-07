@@ -15,7 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx";
 import { Paperclip, X, UploadCloud, Loader2, CheckCircle2, FileText, AlertCircle } from "lucide-react";
 
-import { submitTask } from "@/services/task.service.ts";
+import {taskService} from "@/services/task.service.ts";
 import { TaskStatus } from "@/types/enum/task.enum.ts";
 import type { AttachmentResponse } from "@/types/attachment/attachment.type.ts";
 import type {SubmissionResponse} from "@/types/task/task.type.ts";
@@ -46,7 +46,7 @@ export default function TaskSubmissionView({ groupId, taskId, mySubmission, dead
 
     const submitMutation = useMutation({
         mutationFn: async (values: z.infer<typeof submitSchema>) => {
-            return submitTask(groupId, taskId, {
+            return taskService.submitTask(groupId, taskId, {
                 submissionText: values.submissionText || "",
             }, files);
         },

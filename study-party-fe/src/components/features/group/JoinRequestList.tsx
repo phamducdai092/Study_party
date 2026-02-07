@@ -5,9 +5,7 @@ import {ScrollArea} from "@/components/ui/scroll-area";
 import {toast} from "sonner";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
 import {
-    getJoinRequestsForGroup,
-    approveJoinRequest,
-    rejectJoinRequest
+    joinRequestService
 } from "@/services/join_request.service";
 import type {JoinRequestResponse} from "@/types/group/join_request.type";
 import {fmtDateTime} from "@/utils/date";
@@ -21,7 +19,7 @@ export function JoinRequestList({groupSlug}: { groupSlug: string }) {
     const {data: requests = [], isLoading: loading} = useQuery({
         queryKey: ["join-requests", groupSlug], // Key định danh duy nhất cho cache này
         queryFn: async () => {
-            const res = await getJoinRequestsForGroup(groupSlug);
+            const res = await joinRequestService.getJoinRequestsForGroup(groupSlug);
             return res.data || [];
         },
         staleTime: 1000 * 60 * 5, // 👈 QUAN TRỌNG: Trong 5 phút, nếu đổi tab quay lại thì KHÔNG gọi API
@@ -32,7 +30,7 @@ export function JoinRequestList({groupSlug}: { groupSlug: string }) {
     const handleApprove = async (reqId: number, userName: string) => {
         try {
             setProcessingId(reqId);
-            await approveJoinRequest(reqId);
+            await joinRequestService.approveJoinRequest(reqId);
             toast.success(`Đã duyệt thành viên ${userName}`);
 
             // ✅ Cập nhật Cache thủ công (Optimistic Update) -> UI update ngay lập tức
@@ -50,7 +48,7 @@ export function JoinRequestList({groupSlug}: { groupSlug: string }) {
     const handleReject = async (reqId: number) => {
         try {
             setProcessingId(reqId);
-            await rejectJoinRequest(reqId);
+            await joinRequestService.rejectJoinRequest(reqId);
             toast.info("Đã từ chối yêu cầu");
 
             // ✅ Cập nhật Cache thủ công

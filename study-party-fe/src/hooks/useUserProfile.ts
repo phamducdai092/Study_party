@@ -2,8 +2,8 @@ import {useState, useMemo, useRef} from "react";
 import {toast} from "sonner";
 import useAuthStore from "@/store/auth.store";
 import {uploadToCloudinary} from "@/lib/cloudinary";
-import {updateUserProfile} from "@/services/user.service";
-import {loadMe} from "@/services/auth.service";
+import {userService} from "@/services/user.service";
+import {authService} from "@/services/auth.service";
 import type {User, UserInformationUpdatePayload} from "@/types/user.type";
 
 export function useUserProfile(user: User) {
@@ -43,8 +43,8 @@ export function useUserProfile(user: User) {
             };
             const body = Object.fromEntries(Object.entries(payload).filter(([, v]) => v !== undefined));
 
-            await updateUserProfile(body);
-            const res = await loadMe();
+            await userService.updateUserProfile(body);
+            const res = await authService.loadMe();
             setUser?.(res?.data?.user ?? res?.data);
             toast.success("Cập nhật thông tin thành công!");
         } catch (e: any) {

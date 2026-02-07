@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx"
 import { ScrollArea } from "@/components/ui/scroll-area.tsx";
 import { toast } from "sonner";
 
-import { getSubmissions } from "@/services/task.service.ts";
+import {taskService} from "@/services/task.service.ts";
 import { TaskStatus } from "@/types/enum/task.enum.ts";
 import type { SubmissionResponse } from "@/types/task/task.type.ts";
 import TaskGradingDialog from "../grading/TaskGradingDialog.tsx";
@@ -23,7 +23,7 @@ export default function TaskSubmissionList({ groupId, taskId }: { groupId: numbe
     const { data: submissions = [], isLoading } = useQuery({
         queryKey: ["task-submissions", taskId],
         queryFn: async () => {
-            const res = await getSubmissions(groupId, taskId, { page: 0, size: 100 });
+            const res = await taskService.getSubmissions(groupId, taskId, { page: 0, size: 100 });
             return res.data || [];
         }
     });

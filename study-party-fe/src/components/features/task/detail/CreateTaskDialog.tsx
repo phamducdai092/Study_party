@@ -33,7 +33,7 @@ import {cn} from "@/lib/utils.ts";
 // --- Service & Types ---
 import {SubmissionType} from "@/types/enum/task.enum.ts";
 import type {CreateTaskRequest} from "@/types/task/task.type.ts";
-import {createTask} from "@/services/task.service.ts";
+import {taskService} from "@/services/task.service.ts";
 import {useGroupMembers} from "@/hooks/useGroupMember.ts";
 import AvatarDisplay from "@/components/shared/AvatarDisplay.tsx";
 import useAuthStore from "@/store/auth.store.ts";
@@ -112,7 +112,7 @@ export default function CreateTaskDialog({groupId, isOpen, onClose, onSuccess}: 
                 assigneeIds: finalAssignees,
             };
 
-            await createTask(groupId, requestData, files);
+            await taskService.createTask(groupId, requestData, files);
 
             toast.success("Đã giao bài tập thành công!");
 

@@ -1,5 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { getJoinRequestsByUser } from "@/services/join_request.service";
+import {joinRequestService} from "@/services/join_request.service";
 
 export const joinRequestKeys = {
     all: ['join-requests'] as const,
@@ -19,7 +19,7 @@ export function useJoinRequests(options: UseJoinRequestsOptions = {}) {
         queryKey: joinRequestKeys.list(page, size),
         queryFn: async () => {
             // Gọi service
-            const res = await getJoinRequestsByUser({ page, size });
+            const res = await joinRequestService.getJoinRequestsByUser({ page, size });
             return {
                 items: res.data || [], // Map response trả về items
                 meta: res.meta         // Map response trả về meta paging

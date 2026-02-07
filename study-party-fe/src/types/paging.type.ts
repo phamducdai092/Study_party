@@ -6,11 +6,27 @@ export type PagingPayload = {
     keyword?: string;
 }
 
-export type PagingResponse = {
+export type PageMeta = {
     page: number;
     size: number;
     totalItems: number;
     totalPages: number;
     sort: string;
-    filter: string;
+    filter: Record<string, never>;
+}
+
+export type CursorMeta = {
+    limit: number;
+    nextCursor: string;
+    prevCursor: string;
+    filter: Record<string, never>;
+}
+
+export interface TableParams {
+    page: number;
+    size: number;
+    sort?: string;
+    keyword?: string;
+    filters?: Record<string, never>;
+    [key: string]: any;
 }

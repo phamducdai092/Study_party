@@ -17,22 +17,24 @@ const buildFormData = (jsonData: any, files?: File[]) => {
     return formData;
 };
 
-export const sendGroupMessage = async (groupId: number, chatRequestPayload: SendMessageRequest, files?: File[]) => {
-    // Dùng buildFormData để đóng gói
-    const formData = buildFormData(chatRequestPayload, files);
+export const chatService = {
+    sendGroupMessage: async (groupId: number, chatRequestPayload: SendMessageRequest, files?: File[]) => {
+        // Dùng buildFormData để đóng gói
+        const formData = buildFormData(chatRequestPayload, files);
 
-    // Gửi POST với FormData (Browser tự set Content-Type multipart/form-data)
-    const res = await http.post<ApiResponse<void>>(
-        `/chat/group/${groupId}`,
-        formData
-    );
-    return res.data;
-}
+        // Gửi POST với FormData (Browser tự set Content-Type multipart/form-data)
+        const res = await http.post<ApiResponse<void>>(
+            `/chat/group/${groupId}`,
+            formData
+        );
+        return res.data;
+    },
 
-export const getGroupMessages = async (groupId: number, page: number = 0, size: number = 20) => {
-    const res = await http.get<IMessage[]>(`/chat/group/${groupId}`, {
-        params: {page, size}
-    });
+    getGroupMessages: async (groupId: number, page: number = 0, size: number = 20) => {
+        const res = await http.get<IMessage[]>(`/chat/group/${groupId}`, {
+            params: {page, size}
+        });
 
-    return res as UnwrappedResponse<IMessage[]>;
+        return res as UnwrappedResponse<IMessage[]>;
+    }
 }

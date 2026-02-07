@@ -16,7 +16,7 @@ import {RoomTabs} from "@/components/features/group/RoomTabs";
 import {RoomPresenceListener} from "@/components/features/listeners/RoomPresenceListener";
 import GuestIntroCard from "@/components/features/group/GuestIntroCard.tsx";
 import {getEnumItem} from "@/utils/enumItemExtract.ts";
-import {createJoinRequest} from "@/services/join_request.service.ts";
+import {joinRequestService} from "@/services/join_request.service.ts";
 import {useEnumStore} from "@/store/enum.store.ts";
 import Pomodoro from "@/components/shared/Pomodoro.tsx";
 import {callService} from "@/services/call.service.ts";
@@ -85,7 +85,7 @@ function RoomInnerContent() {
 
     const handleRequestJoin = async () => {
         try {
-            await createJoinRequest(roomData!.slug);
+            await joinRequestService.createJoinRequest(roomData!.slug);
             toast.success("Yêu cầu tham gia đã được gửi.");
         } catch (err: any) {
             toast.error(err?.response?.data?.message || "Lỗi gửi yêu cầu.");

@@ -10,7 +10,7 @@ import type {EnumItem} from "@/types/enum.type";
 import {usePresenceStore} from "@/store/presence.store.ts";
 import {LogOut, Users} from "lucide-react";
 import {useNavigate} from "react-router-dom";
-import {leaveGroup} from "@/services/group.member.service";
+import {groupMemberService} from "@/services/group.member.service";
 import {toast} from "sonner"; //
 
 interface RoomHeaderProps {
@@ -42,7 +42,7 @@ export function RoomHeader({roomData, isGuest, isOwner, onUpdateSuccess}: RoomHe
         }
 
         try {
-            await leaveGroup(roomData.id);
+            await groupMemberService.leaveGroup(roomData.id);
             toast.success("Đã rời nhóm thành công");
             navigate("/rooms"); // Đá về trang danh sách phòng
         } catch (error: any) {

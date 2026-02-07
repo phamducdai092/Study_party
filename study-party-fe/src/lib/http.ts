@@ -12,7 +12,7 @@ import {
 	failRefreshing,
 	queueRefresh,
 } from "./token";
-import {refreshToken} from "@/services/auth.service.ts";
+import {authService} from "@/services/auth.service.ts";
 
 // 🔧 Normalize baseURL: bỏ trailing slash để tránh // khi ghép path
 const API_BASE = (import.meta.env.VITE_API_URL || "").replace(/\/+$/, "");
@@ -132,7 +132,7 @@ http.interceptors.response.use(
 
 		startRefreshing?.();
 		try {
-			const { data } = await refreshToken();
+			const { data } = await authService.refreshToken();
 			const newAccess: string | undefined = (data as any)?.data?.accessToken || (data as any)?.accessToken;
 			if (!newAccess) {
 				failRefreshing?.(); clearTokens?.();

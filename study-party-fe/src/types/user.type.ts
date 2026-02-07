@@ -21,6 +21,7 @@ export type User = {
 export type UserBrief = {
     id: number;
     avatarUrl?: string;
+    email: string;
     displayName?: string | "Chưa đặt tên";
 }
 
