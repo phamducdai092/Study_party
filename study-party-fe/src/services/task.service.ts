@@ -1,5 +1,5 @@
 import http from "@/lib/http.ts";
-import type { ApiResponse, UnwrappedResponse } from "@/types/api.type.ts";
+import type {ApiResponse, UnwrappedResponse} from "@/types/api.type.ts";
 import type {
     CreateTaskRequest,
     UpdateTaskRequest,
@@ -10,7 +10,7 @@ import type {
     TaskSummaryResponse,
     SubmissionResponse,
 } from "@/types/task/task.type.ts";
-import { TaskStatus } from "@/types/enum/task.enum.ts";
+import type {TableParams} from "@/types/paging.type.ts";
 
 // --- HELPER: Đóng gói FormData chuẩn Spring Boot ---
 // Lý do: BE dùng @RequestPart("data") và @RequestPart("files")
@@ -74,15 +74,14 @@ export const taskService = {
 // 4. List Tasks (Có phân trang & Filter)
     getTasks: async (
         groupId: number,
-        params?: { page?: number; size?: number; sort?: string; status?: TaskStatus }
+        params: TableParams
     ) => {
+
+        const {filters, ...rest} = params;
+        const finalParams = {...rest, ...filters};
+
         const res = await http.get<TaskSummaryResponse[]>(`/groups/${groupId}/tasks`, {
-            params: {
-                page: params?.page || 0,
-                size: params?.size || 12,
-                sort: params?.sort,
-                status: params?.status
-            }
+            params: finalParams,
         });
         return res as UnwrappedResponse<TaskSummaryResponse[]>;
     },
@@ -121,15 +120,16 @@ export const taskService = {
     getSubmissions: async (
         groupId: number,
         taskId: number,
-        params?: { page?: number; size?: number }
+        params: TableParams
     ) => {
+
+        const {filters, ...rest} = params;
+        const finalParams = {...rest, ...filters};
+
         const res = await http.get<SubmissionResponse[]>(
             `/groups/${groupId}/tasks/${taskId}/submissions`,
             {
-                params: {
-                    page: params?.page || 0,
-                    size: params?.size || 20 // Default size to hơn chút
-                }
+                params: finalParams,
             }
         );
         return res as UnwrappedResponse<SubmissionResponse[]>;

@@ -27,6 +27,6 @@ export interface TableParams {
     size: number;
     sort?: string;
     keyword?: string;
-    filters?: Record<string, never>;
+    filters?: Record<string, any>;
     [key: string]: any;
 }

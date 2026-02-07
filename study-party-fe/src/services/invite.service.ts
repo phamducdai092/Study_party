@@ -1,7 +1,7 @@
 import http from "@/lib/http";
 import type {ApiResponse, UnwrappedResponse} from "@/types/api.type.ts";
 import type {InvitationRequest, InvitationResponse} from "@/types/group/invitation.type.ts";
-import type {RequestStatus} from "@/types/enum/request.status.type.ts";
+import type {TableParams} from "@/types/paging.type.ts";
 
 export const inviteService = {
     // ================= GROUP OWNER ACTIONS =================
@@ -17,22 +17,14 @@ export const inviteService = {
     // GET /groups/{slug}/invitations
     getGroupInvitations: async (
         slug: string,
-        params?: {
-            page?: number;
-            size?: number;
-            sort?: string;
-            status?: RequestStatus
-            keyword?: string;
-        }
+        params: TableParams
     ) => {
+
+        const {filters, ...rest} = params;
+        const finalParams = {...rest, ...filters};
+
         const res = await http.get<InvitationResponse[]>(`/groups/${slug}/invitations`, {
-            params: {
-                page: params?.page || 0,
-                size: params?.size || 10,
-                sort: params?.sort || 'createdAt',
-                status: params?.status,
-                keyword: params?.keyword
-            }
+            params: finalParams,
         });
         return res as UnwrappedResponse<InvitationResponse[]>;
     },
@@ -49,22 +41,14 @@ export const inviteService = {
     // 4. Get User Invitations (Danh sách lời mời gửi tới User - Có phân trang & filter)
     // GET /invites
     getUserInvitations: async (
-        params?: {
-            page?: number;
-            size?: number;
-            sort?: string;
-            status?: RequestStatus
-            keyword?: string;
-        }
+        params: TableParams
     ) => {
+
+        const {filters, ...rest} = params;
+        const finalParams = {...rest, ...filters};
+
         const res = await http.get<InvitationResponse[]>("/invites", {
-            params: {
-                page: params?.page || 0,
-                size: params?.size || 10,
-                sort: params?.sort || 'createdAt',
-                status: params?.status,
-                keyword: params?.keyword
-            }
+            params: finalParams,
         });
         return res as UnwrappedResponse<InvitationResponse[]>;
     },

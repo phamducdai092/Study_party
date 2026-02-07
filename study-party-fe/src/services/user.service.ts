@@ -1,6 +1,7 @@
 import http from "@/lib/http.ts";
 import type {UserInformationResponse, UserInformationUpdatePayload, UserSearchResponse} from "@/types/user.type.ts";
 import type {ApiResponse, UnwrappedResponse} from "@/types/api.type.ts";
+import type {TableParams} from "@/types/paging.type.ts";
 
 
 export const userService = {
@@ -17,15 +18,14 @@ export const userService = {
 
 // GET /user/search
     searchUsers: async (
-        params?: { keyword: string, page?: number; size?: number; sort?: string; }
+        params: TableParams
     ) => {
+
+        const {filters, ...rest} = params;
+        const finalParams = {...rest, ...filters};
+
         const res = await http.get<UserSearchResponse[]>(`/user/search`, {
-            params: {
-                keyword: params?.keyword,
-                page: params?.page || 0,
-                size: params?.size || 12,
-                sort: params?.sort,
-            }
+            params: finalParams,
         });
         return res as UnwrappedResponse<UserSearchResponse[]>;
     },

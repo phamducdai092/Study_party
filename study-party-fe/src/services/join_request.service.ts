@@ -1,6 +1,7 @@
 import http from "@/lib/http.ts";
 import type {ApiResponse, UnwrappedResponse} from "@/types/api.type.ts";
 import type {JoinRequestForUser, JoinRequestResponse} from "@/types/group/join_request.type.ts";
+import type {TableParams} from "@/types/paging.type.ts";
 
 const join_request_prefix = 'request/';
 
@@ -33,12 +34,15 @@ export const joinRequestService = {
     },
 
     getJoinRequestsByUser: async (
-        params?: {
-            page?: number;
-            size?: number;
-        }
+        params: TableParams
     ) => {
-        const res = await http.get<JoinRequestForUser[]>(`${join_request_prefix}/user`, {params});
+
+        const {filters, ...rest} = params;
+        const finalParams = {...rest, ...filters};
+
+        const res = await http.get<JoinRequestForUser[]>(`${join_request_prefix}/user`, {
+            params: finalParams,
+        });
         return res as unknown as UnwrappedResponse<JoinRequestForUser[]>;
     },
 }
