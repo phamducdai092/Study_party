@@ -1,0 +1,17 @@
+package com.web.services.attachment;
+
+import com.web.dto.response.group.task.AttachmentDetailResponse;
+import com.web.entities.Users;
+import com.web.entities.task.Task;
+import com.web.entities.task.TaskSubmission;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
+
+public interface AttachmentService {
+    void saveAttachments(List<MultipartFile> files, Task task, TaskSubmission submission, Users uploader);
+    Page<AttachmentDetailResponse> getMyAttachments(Long userId, Pageable pageable);
+    Page<AttachmentDetailResponse> getAttachmentsByGroup(Long groupId, Long userId, Pageable pageable);
+}

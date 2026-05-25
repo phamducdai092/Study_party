@@ -1,0 +1,20 @@
+package com.web.dto.response.group;
+
+import com.web.entities.enums.group.GroupTopic;
+
+import java.time.Instant;
+
+public record GroupResponse(
+        Long id,
+        String name,
+        String slug,
+        String description,
+        GroupTopic topic,
+        String topicColor,
+        Integer maxMembers,
+        Integer memberCount,
+        Long ownerId,
+        Instant createdAt,
+        Boolean isDeleted
+) {
+}
