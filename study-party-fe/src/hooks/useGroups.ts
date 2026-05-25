@@ -1,32 +1,21 @@
 import {keepPreviousData, useQuery} from "@tanstack/react-query";
 import {groupService} from "@/services/group.service";
+import type {TableParams} from "@/types/paging.type.ts";
 
-// 1. Định nghĩa Type
+// 1. Type
 export type GroupListType = 'joined' | 'owned' | 'discover';
 
-// 2. Key Factory (Quản lý Cache Key)
+// 2. Key Factory (Thêm params vào key để cache chuẩn từng mm)
 export const groupListKeys = {
     all: ['groups-list'] as const,
-    joined: (page: number, size: number) => [...groupListKeys.all, 'joined', page, size] as const,
-    owned: (page: number, size: number) => [...groupListKeys.all, 'owned', page, size] as const,
-    discover: (page: number, size: number) => [...groupListKeys.all, 'discover', page, size] as const,
+    list: (type: GroupListType, params: TableParams) =>
+        [...groupListKeys.all, type, params] as const,
 };
 
-type UseGroupsOptions = {
-    type: GroupListType;
-    page?: number;
-    size?: number;
-    enabled?: boolean;
-}
+// 3. Hook chính
+export function useGroups(type: GroupListType, params: TableParams, enabled = true) {
 
-export function useGroups({type, page = 0, size = 12, enabled = true}: UseGroupsOptions) {
-
-    const queryKey = {
-        joined: groupListKeys.joined(page, size),
-        owned: groupListKeys.owned(page, size),
-        discover: groupListKeys.discover(page, size),
-    }[type];
-
+    // Map API call tương ứng với type
     const apiCall = {
         joined: groupService.getRoomsUserJoined,
         owned: groupService.getRoomsUserOwned,
@@ -34,19 +23,17 @@ export function useGroups({type, page = 0, size = 12, enabled = true}: UseGroups
     }[type];
 
     return useQuery({
-        // Sử dụng key đã map ở trên
-        queryKey: queryKey,
+        // Key thay đổi theo params -> Tự động refetch
+        queryKey: groupListKeys.list(type, params),
 
         queryFn: async () => {
-            // Gọi API đã map ở trên
-            const res = await apiCall({page, size, sort: 'createdAt'});
-
+            const res = await apiCall(params);
             return {
                 items: res.data || [],
                 meta: res.meta
             };
         },
-        placeholderData: keepPreviousData,
+        placeholderData: keepPreviousData, // Giữ data cũ cho đỡ giật lag
         staleTime: 1000 * 60 * 2, // 2 phút
         enabled: enabled,
     });

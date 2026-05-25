@@ -28,7 +28,7 @@ const AvatarDisplay = ({
         userId ? state.onlineUserIds.has(userId) : false
     );
 
-    console.log("AvatarDisplay - isOnline:", isOnline, "for userId:", userId);
+    // console.log("AvatarDisplay - isOnline:", isOnline, "for userId:", userId);
 
     return (
         <div className="relative inline-block">
