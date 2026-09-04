@@ -2,7 +2,6 @@ package com.web.services.account;
 
 
 import com.web.dto.request.verify.*;
-import com.web.study.party.dto.request.verify.*;
 
 public interface AccountService {
 

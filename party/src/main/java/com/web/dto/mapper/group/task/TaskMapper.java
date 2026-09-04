@@ -2,7 +2,6 @@ package com.web.dto.mapper.group.task;
 
 import com.web.dto.mapper.user.UserMapper;
 import com.web.dto.response.group.task.*;
-import com.web.study.party.dto.response.group.task.*;
 import com.web.entities.task.Attachment;
 import com.web.entities.task.Task;
 import com.web.entities.task.TaskAssignment;

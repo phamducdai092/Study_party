@@ -8,7 +8,6 @@ import com.web.dto.response.group.task.SubmissionResponse;
 import com.web.dto.response.group.task.TaskDetailResponse;
 import com.web.dto.response.group.task.TaskResponse;
 import com.web.dto.response.group.task.TaskSummaryResponse;
-import com.web.study.party.dto.response.group.task.*;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.multipart.MultipartFile;

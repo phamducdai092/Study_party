@@ -85,8 +85,8 @@ public class GroupServiceImp implements GroupService {
         // 1. Tạo Spec: Logic tìm nhóm khám phá phức tạp nằm gọn trong 1 dòng này
         Specification<StudyGroups> spec = Specification.allOf(
                 GroupSpecs.isDiscoverableFor(userId),
-                GroupSpecs.nameContains(filter.getKeyword()),
-                GroupSpecs.hasTopic(filter.getTopic())
+                GroupSpecs.nameContains(filter.keyword()),
+                GroupSpecs.hasTopic(filter.topic())
         );
 
         return groupRepo.findAll(spec, pageable)

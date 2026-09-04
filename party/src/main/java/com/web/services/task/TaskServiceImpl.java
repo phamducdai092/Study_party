@@ -9,8 +9,6 @@ import com.web.dto.request.group.task.SubmitTaskRequest;
 import com.web.dto.request.group.task.UpdateTaskRequest;
 import com.web.dto.response.group.task.*;
 import com.web.entities.Users;
-import com.web.study.party.dto.request.group.task.*;
-import com.web.study.party.dto.response.group.task.*;
 import com.web.entities.enums.task.TaskStatus;
 import com.web.entities.group.StudyGroups;
 import com.web.entities.task.Task;

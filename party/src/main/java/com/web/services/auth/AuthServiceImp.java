@@ -5,7 +5,6 @@ import com.web.dto.request.user.LoginRequest;
 import com.web.dto.request.user.RegisterRequest;
 import com.web.dto.user.UserDTO;
 import com.web.dto.mapper.user.UserMapper;
-import com.web.study.party.dto.request.user.*;
 import com.web.dto.response.TokenResponse;
 import com.web.dto.response.auth.AuthResponse;
 import com.web.entities.Users;

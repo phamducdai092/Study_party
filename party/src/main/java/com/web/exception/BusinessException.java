@@ -1,4 +1,4 @@
-package com.web.exception;// package com.web.study.party.api;
+package com.web.exception;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

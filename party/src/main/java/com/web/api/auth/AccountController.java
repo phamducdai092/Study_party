@@ -1,7 +1,6 @@
 package com.web.api.auth;
 
 import com.web.dto.request.verify.*;
-import com.web.study.party.dto.request.verify.*;
 import com.web.dto.response.ApiResponse;
 import com.web.entities.enums.CodeStatus;
 import com.web.services.account.AccountService;

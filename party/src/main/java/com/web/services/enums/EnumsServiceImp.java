@@ -6,7 +6,6 @@ import com.web.entities.enums.AccountStatus;
 import com.web.entities.enums.CodeStatus;
 import com.web.entities.enums.Role;
 import com.web.entities.enums.group.*;
-import com.web.study.party.entities.enums.group.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
